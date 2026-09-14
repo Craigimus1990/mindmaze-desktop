@@ -2328,8 +2328,8 @@ git commit -m "feat: copy assets and add the name-to-URL manifest"
 ### Task 10: RoomGeometry and PlacementMap
 
 **Files:**
-- Create: `src/rendering/RoomGeometry.ts`, `src/rendering/PlacementMap.ts`, `src/rendering/CharacterCatalog.ts`
-- Test: `tests/rendering/RoomGeometry.test.ts`, `tests/rendering/PlacementMap.test.ts`, `tests/rendering/CharacterCatalog.test.ts`
+- Create: `src/rendering/hash.ts`, `src/rendering/RoomGeometry.ts`, `src/rendering/PlacementMap.ts`, `src/rendering/CharacterCatalog.ts`
+- Test: `tests/rendering/hash.test.ts`, `tests/rendering/RoomGeometry.test.ts`, `tests/rendering/PlacementMap.test.ts`, `tests/rendering/CharacterCatalog.test.ts`
 
 **Interfaces:**
 - Consumes: `assetManifest` (Task 9), models (Task 2).
@@ -2434,20 +2434,69 @@ export const tapBoundaries = (
 }
 ```
 
-- [ ] **Step 4: Port `PlacementMap.ts` and `CharacterCatalog.ts`**
+- [ ] **Step 4: Write `src/rendering/hash.ts` — the 32-bit avalanche**
+
+**Kotlin Int arithmetic does not survive a naive port.** `PlacementMap.hash` (and the identical
+copy in `RoomTreasure.kt`, ported in Task 12) relies on 32-bit signed wrapping multiplication and
+an unsigned shift:
+
+```kotlin
+var h = roomId * -0x61c88647 xor salt
+h = h xor (h ushr 15)
+h *= -0x7ee3623b
+h = h xor (h ushr 13)
+```
+
+JavaScript numbers are 64-bit floats: `*` does not wrap, so the product is simply a different
+number, and the bucket it lands in changes. That reassigns characters and treasure sprites to
+different rooms — a silent divergence from the Android build that also fails the ported tests.
+
+Use `Math.imul` (which IS 32-bit wrapping multiply) and `>>>`:
+
+```ts
+/**
+ * The 32-bit integer avalanche PlacementMap and RoomTreasure both key off.
+ *
+ * Math.imul, not `*`: Kotlin Int multiplication wraps at 32 bits and JavaScript's does not, so a
+ * plain `*` silently lands in a different bucket and moves a room's character or treasure. `>>>`
+ * matches Kotlin's `ushr`; `>>` would sign-extend and diverge on negative intermediates.
+ */
+export const avalanche = (roomId: number, salt: number): number => {
+  let h = (Math.imul(roomId, -0x61c88647) ^ salt) | 0
+  h = (h ^ (h >>> 15)) | 0
+  h = Math.imul(h, -0x7ee3623b)
+  return (h ^ (h >>> 13)) | 0
+}
+
+/** Kotlin's Math.floorMod — JS `%` keeps the sign of the dividend, which would throw off indexing. */
+export const floorMod = (a: number, n: number): number => ((a % n) + n) % n
+
+/** floorMod(avalanche(...), buckets), the form both call sites use. */
+export const bucket = (roomId: number, salt: number, buckets: number): number =>
+  floorMod(avalanche(roomId, salt), buckets)
+```
+
+Write `tests/rendering/hash.test.ts` asserting: `avalanche` returns a 32-bit integer for a range
+of room ids (`Number.isInteger` and within `-2**31 .. 2**31-1`), that it is stable for a given
+id, that adjacent ids land in different buckets (the avalanche's purpose), and that
+`floorMod(-7, 1024)` is `1017` rather than JS's `-7`.
+
+Task 12 imports `avalanche`/`bucket` from here rather than rewriting the arithmetic.
+
+- [ ] **Step 5: Port `PlacementMap.ts` and `CharacterCatalog.ts`**
 
 Read `../mindmaze/app/src/main/kotlin/com/mindmaze/app/rendering/PlacementMap.kt` (127 lines) and `CharacterCatalog.kt` (143 lines) and port them, reading `character_placements.json` through the asset manifest. Port their Kotlin tests alongside.
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [ ] **Step 6: Run tests to verify they pass**
 
 Run: `npx vitest run tests/rendering/`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add -A
-git commit -m "feat: port RoomGeometry, PlacementMap, and CharacterCatalog"
+git commit -m "feat: port RoomGeometry, PlacementMap, CharacterCatalog, and the shared hash"
 ```
 
 ---
@@ -2657,7 +2706,14 @@ Backdrops are drawn **center-cropped (cover), never stretched** — the doc comm
 
 - [ ] **Step 1: Write `RoomTreasure.ts`**
 
-Port `RoomTreasure.kt`, which decides which treasure sprite a room shows and what it is worth. Port `RoomTreasureTest.kt` with it.
+Port `RoomTreasure.kt`, which decides which treasure sprite a room shows and what it is worth.
+Port `RoomTreasureTest.kt` with it.
+
+**Do not reimplement its `hash`/`bucket`.** `RoomTreasure.kt` carries a byte-identical copy of the
+32-bit avalanche in `PlacementMap.kt`; Task 10 extracted it to `src/rendering/hash.ts`. Import
+`avalanche`, `bucket`, and `floorMod` from there. Writing it again in plain JS `*` arithmetic
+would not wrap at 32 bits and would hand back different buckets — moving treasure sprites between
+rooms and failing `RoomTreasureTest`.
 
 - [ ] **Step 2: Run the RoomTreasure test**
 
