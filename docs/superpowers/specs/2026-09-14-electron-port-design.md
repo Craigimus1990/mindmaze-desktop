@@ -375,12 +375,22 @@ electron-builder targets macOS (`.dmg`, x64 + arm64) and Windows (NSIS `.exe`). 
 ### The macOS build constraint
 
 **A macOS `.dmg` cannot be produced on the Linux development machine.** macOS packaging
-requires macOS. Two ways round it:
+requires macOS tooling (`hdiutil` and the codesign machinery, needed even for unsigned
+builds). This is a *build-machine* constraint only: the app itself runs natively on macOS,
+including Apple Silicon, with no platform-specific code. `app.getPath('userData')` resolves
+to `~/Library/Application Support/MindMaze` without any change on our side.
 
-1. **GitHub Actions** (recommended) — free macOS runners build the `.dmg` on a tag push, and
-   the Releases page doubles as the distribution channel for family. The workflow is written
-   as part of this port.
-2. **Build on any Mac** — `npm run dist:mac`, with config ready to go.
+**Decided: GitHub Actions builds the macOS artifact.** A workflow on a `macos-latest` runner
+packages `.dmg` for x64 and arm64 on a tag push, and attaches it to a GitHub Release
+alongside the Windows `.exe`. The Release page is also the distribution channel — family
+members get a link rather than a large email attachment.
+
+The developer's only Mac is a work machine, so building locally on it is deliberately off the
+table. The workflow must therefore be self-sufficient: no step may assume a local macOS
+checkout, and `dist:mac` is never part of the documented local workflow.
+
+A `npm run dist:mac` script is still defined for completeness, should a personal Mac ever
+be available.
 
 ### Signing
 
