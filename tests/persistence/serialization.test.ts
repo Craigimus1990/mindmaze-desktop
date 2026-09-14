@@ -212,4 +212,142 @@ describe('GameState serialization', () => {
     expect(() => deserializeGameState('[]')).toThrow(/corrupt save/)
     expect(() => deserializeGameState('{"version":99}')).toThrow(/version/)
   })
+
+  // --- closed-string fields are validated, not just shaped ---------------------------------
+  //
+  // A string that is really an enum type-checks under `as Topic` and validates nothing: the
+  // union is erased at runtime. Each of these five was accepted silently before, producing a
+  // GameState that was type-correct and semantically wrong. The DoorState case was the most
+  // concrete — a Door with a bogus `state` falls through move()'s switch into the Gate
+  // remainder and returns InvalidAction('Gate is closed'), a door reporting itself as a gate.
+  //
+  // Inputs are built by serializing a REAL generated maze and mutating one field. A hand-written
+  // fixture is easy to get structurally wrong, which would throw for the wrong reason and mask
+  // what is under test — so each case asserts the message names its own field.
+
+  /** Serialize a real generated maze, mutate the parsed tree, and re-encode. */
+  const mutatedSave = (mutate: (save: Record<string, any>) => void): string => {
+    const maze = generate('SIMPLE', makeRng(3))
+    const state: GameState = {
+      ...sampleState(),
+      maze,
+      currentRoomId: maze.startId,
+      visitedRoomIds: new Set([maze.startId]),
+    }
+    const save = JSON.parse(serializeGameState(state))
+    mutate(save)
+    return JSON.stringify(save)
+  }
+
+  it('the unmutated control save still loads', () => {
+    // Guards the mutation harness itself: if this threw, every rejection test below would pass
+    // for the wrong reason.
+    expect(() => deserializeGameState(mutatedSave(() => {}))).not.toThrow()
+  })
+
+  it('rejects a bogus DoorState', () => {
+    const json = mutatedSave((save) => {
+      for (const [, room] of save.maze.rooms) {
+        const doorExit = room.exits.find(
+          ([, e]: [string, { type: string }]) => e.type === 'Door',
+        )
+        if (doorExit) {
+          doorExit[1].state = 'BANANA'
+          return
+        }
+      }
+      throw new Error('fixture has no Door to mutate')
+    })
+    expect(() => deserializeGameState(json)).toThrow(/corrupt save: door state/)
+    expect(() => deserializeGameState(json)).toThrow(/BANANA/)
+  })
+
+  it('rejects a bogus Direction as an exit key', () => {
+    const json = mutatedSave((save) => {
+      const firstRoom = save.maze.rooms[0][1]
+      firstRoom.exits[0][0] = 'UPWARDS'
+    })
+    expect(() => deserializeGameState(json)).toThrow(/corrupt save: exit direction/)
+    expect(() => deserializeGameState(json)).toThrow(/UPWARDS/)
+  })
+
+  it('rejects a bogus Direction in a gate pair', () => {
+    const json = mutatedSave((save) => {
+      // The generated SIMPLE maze may have no gate pairs; add one so the field exists.
+      save.maze.gatePairs = [['g1', { id: 'g1', openRoomId: 0, openDirection: 'SIDEWAYS' }]]
+    })
+    expect(() => deserializeGameState(json)).toThrow(
+      /corrupt save: gatePair.openDirection/,
+    )
+    expect(() => deserializeGameState(json)).toThrow(/SIDEWAYS/)
+  })
+
+  it('rejects a bogus Topic', () => {
+    const json = mutatedSave((save) => {
+      save.settings.topics = ['ASTROLOGY']
+    })
+    expect(() => deserializeGameState(json)).toThrow(/corrupt save: settings.topics entry/)
+    expect(() => deserializeGameState(json)).toThrow(/ASTROLOGY/)
+  })
+
+  it('rejects a bogus Difficulty', () => {
+    const json = mutatedSave((save) => {
+      save.settings.difficulty = 'NONSENSE'
+    })
+    expect(() => deserializeGameState(json)).toThrow(/corrupt save: settings.difficulty/)
+    expect(() => deserializeGameState(json)).toThrow(/NONSENSE/)
+  })
+
+  it('rejects a bogus Complexity', () => {
+    const json = mutatedSave((save) => {
+      save.settings.complexity = 'IMPOSSIBLE'
+    })
+    expect(() => deserializeGameState(json)).toThrow(/corrupt save: settings.complexity/)
+    expect(() => deserializeGameState(json)).toThrow(/IMPOSSIBLE/)
+  })
+
+  // The three union discriminants were ALREADY rejected, by the `default:` branch of each
+  // decode switch — no oneOf check was added for them. Pinned so that stays true.
+  it('rejects bogus union discriminants', () => {
+    expect(() =>
+      deserializeGameState(
+        mutatedSave((save) => {
+          save.maze.rooms[0][1].exits[0][1] = { type: 'Portal' }
+        }),
+      ),
+    ).toThrow(/unknown exit type/)
+
+    expect(() =>
+      deserializeGameState(
+        mutatedSave((save) => {
+          save.maze.rooms[0][1].pickup = { type: 'Sandwich' }
+        }),
+      ),
+    ).toThrow(/unknown pickup type/)
+
+    expect(() =>
+      deserializeGameState(
+        mutatedSave((save) => {
+          save.maze.treasureLock = { type: 'Welded' }
+        }),
+      ),
+    ).toThrow(/unknown treasureLock type/)
+  })
+
+  it('validation does not reject good saves', () => {
+    // The control for all of the above: a HARD maze exercises every collection type at once —
+    // 85 rooms, a Barred lock with two Sets, gate pairs, and all three exit types.
+    for (const seed of [0, 1, 2, 3, 4]) {
+      const maze = generate('HARD', makeRng(seed))
+      expect(maze.treasureLock.type).toBe('Barred')
+      const state: GameState = {
+        ...sampleState(),
+        maze,
+        currentRoomId: maze.startId,
+        visitedRoomIds: new Set([maze.startId]),
+        windlassProgress: new Map([[4, 2]]),
+      }
+      expect(roundTrip(state)).toEqual(state)
+    }
+  })
 })

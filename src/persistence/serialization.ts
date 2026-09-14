@@ -1,4 +1,5 @@
 import type { Direction } from '@/engine/model/Direction'
+import { DIRECTIONS } from '@/engine/model/Direction'
 import type { GameState } from '@/engine/model/GameState'
 import type { Maze, TreasureLock } from '@/engine/model/Maze'
 import type { ExitType, Pickup, Room } from '@/engine/model/Room'
@@ -10,6 +11,12 @@ import type {
   GatePair,
   Inventory,
   Topic,
+} from '@/engine/model/types'
+import {
+  COMPLEXITIES,
+  DIFFICULTIES,
+  DOOR_STATES,
+  TOPICS,
 } from '@/engine/model/types'
 
 /**
@@ -139,6 +146,12 @@ export const serializeGameState = (state: GameState): string =>
  * The same reasoning as TriviaRepository's validation: a save that decodes into a maze with no
  * rooms softlocks the game with no error a player could act on, and the cause would be nowhere
  * near the symptom. Checked once at load, so the cost does not matter.
+ *
+ * This covers structure (shape, types, arity) AND closed-string membership — see oneOf below;
+ * validating only the former kept the promise for half the file and broke it for enums.
+ *
+ * Rejecting is all this module does. What the app SHOWS a player whose save will not load is the
+ * persistence layer's decision, not the decoder's: no try/catch or fallback belongs here.
  */
 const fail = (what: string): never => {
   throw new Error(`corrupt save: ${what}`)
@@ -162,6 +175,29 @@ const arr = (v: unknown, what: string): unknown[] =>
 const obj = (v: unknown, what: string): Record<string, unknown> =>
   isObject(v) ? v : fail(`${what} must be an object`)
 
+/**
+ * A string that must be one of a closed set — an enum in Kotlin, a string-literal union here.
+ *
+ * `str(...) as Topic` type-checks and validates nothing: TypeScript erases the union at runtime,
+ * so a save saying `difficulty: "NONSENSE"` produced a GameState that was type-correct and
+ * semantically wrong, failing somewhere far from the cause. The worst was DoorState — a Door with
+ * a bogus `state` falls through move()'s switch into the Gate remainder and reports itself as
+ * "Gate is closed", a door claiming to be a gate.
+ *
+ * The union discriminants (ExitType.type, Pickup.type, TreasureLock.type) do NOT come through
+ * here: each is already rejected by the `default:` branch of its own decode switch.
+ */
+const oneOf = <T extends string>(
+  v: unknown,
+  allowed: readonly T[],
+  what: string,
+): T => {
+  const sv = str(v, what)
+  return (allowed as readonly string[]).includes(sv)
+    ? (sv as T)
+    : fail(`${what} must be one of ${allowed.join(', ')}, got ${JSON.stringify(sv)}`)
+}
+
 /** An encoded Map entry: a two-element array. */
 const entry = (v: unknown, what: string): readonly [unknown, unknown] => {
   const e = arr(v, `${what} entry`)
@@ -175,7 +211,7 @@ const decodeExit = (v: unknown): ExitType => {
     case 'Absent':
       return { type: 'Absent' }
     case 'Door':
-      return { type: 'Door', state: str(o.state, 'door state') as DoorState }
+      return { type: 'Door', state: oneOf<DoorState>(o.state, DOOR_STATES, 'door state') }
     case 'Gate':
       return {
         type: 'Gate',
@@ -205,7 +241,7 @@ const decodeRoom = (v: unknown): Room => {
   const exits = new Map<Direction, ExitType>()
   for (const raw of arr(o.exits, 'room.exits')) {
     const [k, val] = entry(raw, 'room.exits')
-    exits.set(str(k, 'exit direction') as Direction, decodeExit(val))
+    exits.set(oneOf<Direction>(k, DIRECTIONS, 'exit direction'), decodeExit(val))
   }
   const button = o.buttonGatePairId
   return {
@@ -245,7 +281,11 @@ const decodeGatePair = (v: unknown): GatePair => {
   return {
     id: str(o.id, 'gatePair.id'),
     openRoomId: num(o.openRoomId, 'gatePair.openRoomId'),
-    openDirection: str(o.openDirection, 'gatePair.openDirection') as Direction,
+    openDirection: oneOf<Direction>(
+      o.openDirection,
+      DIRECTIONS,
+      'gatePair.openDirection',
+    ),
   }
 }
 
@@ -279,10 +319,12 @@ const decodeSettings = (v: unknown): GameSettings => {
   const o = obj(v, 'settings')
   return {
     topics: new Set(
-      arr(o.topics, 'settings.topics').map((t) => str(t, 'topic') as Topic),
+      arr(o.topics, 'settings.topics').map((t) =>
+        oneOf<Topic>(t, TOPICS, 'settings.topics entry'),
+      ),
     ),
-    difficulty: str(o.difficulty, 'settings.difficulty') as Difficulty,
-    complexity: str(o.complexity, 'settings.complexity') as Complexity,
+    difficulty: oneOf<Difficulty>(o.difficulty, DIFFICULTIES, 'settings.difficulty'),
+    complexity: oneOf<Complexity>(o.complexity, COMPLEXITIES, 'settings.complexity'),
   }
 }
 

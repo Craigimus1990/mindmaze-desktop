@@ -35,6 +35,14 @@ export const COMPLEXITIES: readonly Complexity[] = ['SIMPLE', 'MEDIUM', 'HARD']
 
 export type DoorState = 'CLOSED' | 'OPEN' | 'LOCKED'
 
+/**
+ * The DoorState members, for validating decoded save data.
+ *
+ * Kotlin got this from `DoorState.entries`; a TypeScript string-literal union leaves no runtime
+ * trace, so the list has to be written out. Mirrors TOPICS / DIFFICULTIES / COMPLEXITIES above.
+ */
+export const DOOR_STATES: readonly DoorState[] = ['CLOSED', 'OPEN', 'LOCKED']
+
 export interface GameSettings {
   readonly topics: ReadonlySet<Topic>
   readonly difficulty: Difficulty
