@@ -3253,6 +3253,8 @@ The repo is ready to push. Tell them:
 
 **Read the Kotlin before porting each file.** The doc comments record bugs already fixed — the door-geometry drift, the maze-shattering generator, the 149-second windlass solve. Porting without reading them risks reintroducing exactly those bugs.
 
+**Carry the comments, not just the code.** Task 2 transcribed every type shape correctly and still lost `TreasureLock`'s rationale — including the note that reset-to-zero was a deliberate choice, the arithmetic behind it (75% answer rate → ~42% chance of three in a row → ~2.4 attempts per windlass), and the fact that flipping the flag is the tuning lever if play proves frustrating. Shapes are recoverable from the Kotlin; *reasoning* is not, and a constant with no comment reads as arbitrary to whoever touches it next. When a Kotlin declaration carries a comment explaining **why**, that comment is part of what you are porting — reviewers are expected to flag its absence.
+
 **Never modify anything under `../mindmaze/`.** It is the reference, and it still has to build and run for Android.
 
 **When Kotlin looks wrong, port it as-is and note it.** The Android app ships and is played. A behaviour change smuggled into a port is the hardest kind of bug to find later, because both sides look correct in isolation.
