@@ -1,4 +1,5 @@
 import type { Difficulty, Topic, TriviaQuestion } from '../model/types'
+import { TOPICS, DIFFICULTIES } from '../model/types'
 
 interface RawQuestion {
   id: string
@@ -7,6 +8,70 @@ interface RawQuestion {
   question: string
   answers: string[]
   correctIndex: number
+}
+
+/** Validate a raw question to fail fast on bad data, like Kotlin's valueOf() and kotlinx.serialization.
+ *  Kotlin threw IllegalArgumentException on unknown enum values and deserialization errors; this
+ *  restores that fail-fast behaviour. Without it, correctIndex: -1 (from a missing field) would
+ *  make every answer wrong and softlock the maze with no error message — a child is told they
+ *  answered wrong when they answered right. Runs once per game at startup, cost is irrelevant. */
+const validateQuestion = (r: unknown): RawQuestion => {
+  if (typeof r !== 'object' || r === null) {
+    throw new Error('question entry must be an object')
+  }
+  const q = r as Record<string, unknown>
+
+  // id and question: non-empty strings
+  if (typeof q.id !== 'string' || q.id.trim() === '') {
+    throw new Error(`question entry missing or empty id: ${JSON.stringify(r)}`)
+  }
+  if (typeof q.question !== 'string' || q.question.trim() === '') {
+    throw new Error(`question "${q.id}": missing or empty question text`)
+  }
+
+  // topic: must be a valid Topic
+  if (typeof q.topic !== 'string') {
+    throw new Error(`question "${q.id}": topic must be a string`)
+  }
+  if (!TOPICS.includes(q.topic as Topic)) {
+    throw new Error(`question "${q.id}": unknown topic "${q.topic}"`)
+  }
+
+  // difficulty: must be a valid Difficulty
+  if (typeof q.difficulty !== 'string') {
+    throw new Error(`question "${q.id}": difficulty must be a string`)
+  }
+  if (!DIFFICULTIES.includes(q.difficulty as Difficulty)) {
+    throw new Error(`question "${q.id}": unknown difficulty "${q.difficulty}"`)
+  }
+
+  // answers: array of at least 2 strings
+  if (!Array.isArray(q.answers)) {
+    throw new Error(`question "${q.id}": answers must be an array`)
+  }
+  if (q.answers.length < 2) {
+    throw new Error(`question "${q.id}": answers must have at least 2 entries`)
+  }
+  if (!q.answers.every((a) => typeof a === 'string')) {
+    throw new Error(`question "${q.id}": all answers must be strings`)
+  }
+
+  // correctIndex: integer in [0, answers.length)
+  if (typeof q.correctIndex !== 'number' || !Number.isInteger(q.correctIndex)) {
+    throw new Error(`question "${q.id}": correctIndex must be an integer`)
+  }
+  if (q.correctIndex < 0 || q.correctIndex >= q.answers.length) {
+    throw new Error(`question "${q.id}": correctIndex ${q.correctIndex} out of range [0, ${q.answers.length})`)
+  }
+
+  return {
+    id: q.id,
+    topic: q.topic as Topic,
+    difficulty: q.difficulty as Difficulty,
+    question: q.question,
+    answers: q.answers as string[],
+    correctIndex: q.correctIndex,
+  }
 }
 
 export class TriviaRepository {
@@ -18,15 +83,22 @@ export class TriviaRepository {
     topics: ReadonlySet<Topic>,
     difficulty: Difficulty,
   ) {
-    const raw = JSON.parse(questionsJson) as RawQuestion[]
-    const all: TriviaQuestion[] = raw.map((r) => ({
-      id: r.id,
-      topic: r.topic as Topic,
-      difficulty: r.difficulty as Difficulty,
-      question: r.question,
-      answers: r.answers,
-      correctIndex: r.correctIndex,
-    }))
+    const parsed = JSON.parse(questionsJson)
+    if (!Array.isArray(parsed)) {
+      throw new Error('questions JSON must be an array')
+    }
+    const raw = parsed as unknown[]
+    const all: TriviaQuestion[] = raw.map((r) => {
+      const validated = validateQuestion(r)
+      return {
+        id: validated.id,
+        topic: validated.topic as Topic,
+        difficulty: validated.difficulty as Difficulty,
+        question: validated.question,
+        answers: validated.answers,
+        correctIndex: validated.correctIndex,
+      }
+    })
 
     // An empty pool is a softlock, not a cosmetic problem: nextQuestion() returns null, the
     // engine answers InvalidAction("No trivia questions available"), and every closed door in

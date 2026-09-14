@@ -75,3 +75,68 @@ describe('TriviaRepository', () => {
     expect(topics.size).toBeGreaterThan(1)
   })
 })
+
+describe('TriviaRepository validation', () => {
+  it('throws on non-array root', () => {
+    expect(() => new TriviaRepository('{}', new Set(['MATH']), 'ADULT'))
+      .toThrow('questions JSON must be an array')
+  })
+
+  it('throws on unknown topic', () => {
+    const badJson = JSON.stringify([{
+      id: 'q1',
+      topic: 'ASTROLOGY',
+      difficulty: 'ADULT',
+      question: 'test?',
+      answers: ['a', 'b'],
+      correctIndex: 0,
+    }])
+    expect(() => new TriviaRepository(badJson, new Set(['MATH']), 'ADULT'))
+      .toThrow(/unknown topic "ASTROLOGY"/)
+  })
+
+  it('throws on unknown difficulty', () => {
+    const badJson = JSON.stringify([{
+      id: 'q2',
+      topic: 'MATH',
+      difficulty: 'IMPOSSIBLE',
+      question: 'test?',
+      answers: ['a', 'b'],
+      correctIndex: 0,
+    }])
+    expect(() => new TriviaRepository(badJson, new Set(['MATH']), 'ADULT'))
+      .toThrow(/unknown difficulty "IMPOSSIBLE"/)
+  })
+
+  it('throws on missing correctIndex', () => {
+    const badJson = JSON.stringify([{
+      id: 'q3',
+      topic: 'MATH',
+      difficulty: 'ADULT',
+      question: 'test?',
+      answers: ['a', 'b'],
+      // correctIndex deliberately omitted, becomes -1 by default
+    }])
+    expect(() => new TriviaRepository(badJson, new Set(['MATH']), 'ADULT'))
+      .toThrow(/correctIndex must be an integer/)
+  })
+
+  it('throws on correctIndex out of range', () => {
+    const badJson = JSON.stringify([{
+      id: 'q4',
+      topic: 'MATH',
+      difficulty: 'ADULT',
+      question: 'test?',
+      answers: ['a', 'b'],
+      correctIndex: 5,
+    }])
+    expect(() => new TriviaRepository(badJson, new Set(['MATH']), 'ADULT'))
+      .toThrow(/correctIndex 5 out of range/)
+  })
+
+  it('valid fixture loads without throwing', () => {
+    expect(() => {
+      repo(['MATH'], 'KINDERGARTEN')
+    }).not.toThrow()
+  })
+})
