@@ -34,7 +34,6 @@ export type TreasureLock =
       readonly completed: ReadonlySet<number>
     }
 
-/** SIMPLE: nothing blocks the treasure. */
 export const TREASURE_OPEN: TreasureLock = { type: 'Open' }
 
 /** Kotlin had this as a property on Barred; TypeScript unions carry no methods. */

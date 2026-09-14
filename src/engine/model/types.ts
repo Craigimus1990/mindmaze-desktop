@@ -1,3 +1,5 @@
+import type { Direction } from './Direction'
+
 export type Topic = 'MATH' | 'LITERATURE' | 'HISTORY' | 'GEOGRAPHY' | 'SCIENCE'
 
 export const TOPICS: readonly Topic[] =
@@ -58,5 +60,5 @@ export interface GatePair {
   readonly id: string
   /** Which room + direction holds the currently-open gate. */
   readonly openRoomId: number
-  readonly openDirection: import('./Direction').Direction
+  readonly openDirection: Direction
 }
