@@ -2167,7 +2167,7 @@ Port `reduce` and `applyHint`. Every user-facing string is copied **exactly**, i
 Run: `npx vitest run tests/ui/ tests/util/`
 Expected: PASS.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add -A
@@ -2689,10 +2689,10 @@ git commit -m "feat: port the room and minimap renderers to canvas"
 ### Task 13: Persistence
 
 **Files:**
-- Create: `src/persistence/serialization.ts`, `src/persistence/GameStateStore.ts`, `src/persistence/SettingsStore.ts`, `src/persistence/QuestionBank.ts`, `src/persistence/QuestionStore.ts`, `src/persistence/SavedGame.ts`
+- Create: `src/persistence/GameStateStore.ts`, `src/persistence/SettingsStore.ts`, `src/persistence/QuestionBank.ts`, `src/persistence/QuestionStore.ts`, `src/persistence/SavedGame.ts`, `src/types/window.d.ts`
 - Modify: `electron/main.ts`, `electron/preload.ts`
-- Create: `src/types/window.d.ts`
-- Test: `tests/persistence/serialization.test.ts`, `tests/persistence/SettingsStore.test.ts`, `tests/persistence/QuestionBank.test.ts`
+- **Already exists — do not recreate:** `src/persistence/serialization.ts` and `tests/persistence/serialization.test.ts` were created by Task 7, which needed the round-trip for its own suite. Extend the file if your stores need a field it does not yet carry; otherwise consume it as-is.
+- Test: `tests/persistence/SettingsStore.test.ts`, `tests/persistence/QuestionBank.test.ts`
 
 **Interfaces:**
 - Consumes: engine models, `GameState`.
@@ -2705,7 +2705,15 @@ git commit -m "feat: port the room and minimap renderers to canvas"
 
 **Serialization note:** `GameState` holds `Set` and `Map`, which `JSON.stringify` turns into `{}`. `serializeGameState` converts them to arrays and `deserializeGameState` restores them. This is why the serialisation test lives here.
 
-- [ ] **Step 1: Write the failing serialization test**
+- [ ] **Step 1: Confirm the Task 7 serialization round-trip still passes**
+
+`src/persistence/serialization.ts` and its test already exist (Task 7). Run them before building
+the stores on top, so a later failure is attributable to the stores rather than the serialiser:
+
+Run: `npx vitest run tests/persistence/serialization.test.ts`
+Expected: PASS. If it fails, stop and report — the engine phase is supposed to have left it green.
+
+For reference, the suite it must satisfy:
 
 ```ts
 // tests/persistence/serialization.test.ts
@@ -2769,22 +2777,13 @@ describe('GameState serialization', () => {
 })
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
-
-Run: `npx vitest run tests/persistence/serialization.test.ts`
-Expected: FAIL — module not found.
-
-- [ ] **Step 3: Write `serialization.ts`**
-
-Convert `Map`/`Set` to arrays on the way out and back on the way in. Every nested collection needs handling: `maze.rooms`, each `room.exits`, `maze.gatePairs`, `visitedRoomIds`, `windlassProgress`, `settings.topics`, and `treasureLock`'s two sets when `Barred`.
-
-- [ ] **Step 4: Write the stores**
+- [ ] **Step 2: Write the stores**
 
 `SettingsStore` keeps its Kotlin defaults exactly: `KINDERGARTEN`, `SIMPLE`, all topics, `musicEnabled = true`. Carry the doc comment explaining why `musicEnabled` is not in `GameSettings` — it is a UI preference and has no business in the engine's save format.
 
 `GameStateStore` keeps `saveActive`/`loadActive`/`clearActive`/`saveCrossSession`/`loadCrossSession`/`clearSaved`, and the legacy fallback: if a file does not parse as `SavedGame`, retry as a bare `GameState` and adopt it with `entryDirection: null`. Without it an upgrade throws on launch and strands the player's game.
 
-- [ ] **Step 5: Fill in `electron/preload.ts`**
+- [ ] **Step 3: Fill in `electron/preload.ts`**
 
 ```ts
 import { contextBridge, ipcRenderer } from 'electron'
@@ -2818,7 +2817,7 @@ const bridge: MindMazeBridge = {
 contextBridge.exposeInMainWorld('mindmaze', bridge)
 ```
 
-- [ ] **Step 6: Add the IPC handlers to `electron/main.ts`**
+- [ ] **Step 4: Add the IPC handlers to `electron/main.ts`**
 
 The filename allowlist matters: it is what stops a compromised renderer from using the bridge to read or write anywhere on disk.
 
@@ -2862,14 +2861,14 @@ ipcMain.handle('store:delete', async (_e, name: string) => {
 
 Add `src/types/window.d.ts` declaring `interface Window { mindmaze: MindMazeBridge }`.
 
-- [ ] **Step 7: Write and run the store tests**
+- [ ] **Step 5: Write and run the store tests**
 
 `SettingsStore` and `QuestionBank` tests inject a fake bridge (an in-memory `Map<string, string>`), so they need no Electron.
 
 Run: `npx vitest run tests/persistence/`
 Expected: PASS.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add -A
