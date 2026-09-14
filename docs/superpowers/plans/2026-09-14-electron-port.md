@@ -14,6 +14,14 @@
 
 ## Global Constraints
 
+- **Running the app locally on this Linux box:** `npx electron` aborts with
+  `FATAL:setuid_sandbox_host.cc(163)` because `node_modules/electron/dist/chrome-sandbox` is not
+  `root:4755` and npm cannot make it so. Launch with `npx electron --no-sandbox` (or
+  `npm run dev -- --no-sandbox`) for local verification. This is a launcher flag about this
+  machine's file permissions — **never** relax the `sandbox: true` webPreference in
+  `electron/main.ts` to work around it. Packaged macOS and Windows builds ship a correctly
+  permissioned helper and are unaffected.
+
 - **Node:** 22.x. **TypeScript:** strict mode, `noUncheckedIndexedAccess` on.
 - **Grid:** `GRID_SIZE = 10`; room ids are `0..99`; direction offsets are NORTH `-10`, SOUTH `+10`, EAST `+1`, WEST `-1`.
 - **No behaviour changes.** Every rule, threshold, string, and quirk matches the Kotlin original. Where the original is odd, preserve the oddity and note it — do not fix it in passing.
