@@ -3255,6 +3255,16 @@ The repo is ready to push. Tell them:
 
 **Carry the comments, not just the code.** Task 2 transcribed every type shape correctly and still lost `TreasureLock`'s rationale — including the note that reset-to-zero was a deliberate choice, the arithmetic behind it (75% answer rate → ~42% chance of three in a row → ~2.4 attempts per windlass), and the fact that flipping the flag is the tuning lever if play proves frustrating. Shapes are recoverable from the Kotlin; *reasoning* is not, and a constant with no comment reads as arbitrary to whoever touches it next. When a Kotlin declaration carries a comment explaining **why**, that comment is part of what you are porting — reviewers are expected to flag its absence.
 
+**JSON parsing policy is per-source, and the Kotlin is deliberate about it.** Three sources, three behaviours — match each, do not unify them:
+
+| Source | Kotlin behaviour | Why | Ported in |
+|---|---|---|---|
+| `questions.json` | `Topic.valueOf`/decoder **throws** on bad data | A bad `correctIndex` means no answer is ever right, every door stays shut, and a child is told they are wrong when they are right — a silent softlock. Fail loud at load. | Task 6 |
+| `character_placements.json` | `try/catch` → **empty map** | Characters are decoration; the game is entirely playable without them. A malformed map must not crash the game. | Task 10 |
+| save files | `try/catch` → **null**, with a legacy-format retry | Throwing on a bad save would strand the player's game on launch. The retry reads pre-envelope saves written before `entryDirection` existed. | Task 13 |
+
+A bare `JSON.parse(x) as T` is an unchecked assertion, not a parse: TypeScript erases it and bad data flows on silently. Where the table says *throws*, validate the shape and throw with a message naming the offending record and field.
+
 **Never modify anything under `../mindmaze/`.** It is the reference, and it still has to build and run for Android.
 
 **When Kotlin looks wrong, port it as-is and note it.** The Android app ships and is played. A behaviour change smuggled into a port is the hardest kind of bug to find later, because both sides look correct in isolation.
