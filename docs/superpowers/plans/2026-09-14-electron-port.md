@@ -2755,6 +2755,7 @@ git commit -m "feat: port the room and minimap renderers to canvas"
 **Files:**
 - Create: `src/persistence/GameStateStore.ts`, `src/persistence/SettingsStore.ts`, `src/persistence/QuestionBank.ts`, `src/persistence/QuestionStore.ts`, `src/persistence/SavedGame.ts`, `src/types/window.d.ts`
 - Modify: `electron/main.ts`, `electron/preload.ts`
+- **Carried forward from Task 7 — version vs corruption.** `deserializeGameState` throws `corrupt save: save format version N, expected M` for a version mismatch and `corrupt save: ...` for genuine corruption. Both are plain `Error`s, so a bare `catch` cannot tell them apart. The legacy-format retry below must branch on the version field (read it before decoding, or have the decoder throw a distinguishable error) rather than treating every throw as "try the legacy path". Getting this wrong means either a corrupt save is silently retried as legacy, or a legitimately old save is discarded.
 - **Already exists — do not recreate:** `src/persistence/serialization.ts` and `tests/persistence/serialization.test.ts` were created by Task 7, which needed the round-trip for its own suite. Extend the file if your stores need a field it does not yet carry; otherwise consume it as-is.
 - Test: `tests/persistence/SettingsStore.test.ts`, `tests/persistence/QuestionBank.test.ts`
 
@@ -3264,6 +3265,8 @@ The repo is ready to push. Tell them:
 | save files | `try/catch` → **null**, with a legacy-format retry | Throwing on a bad save would strand the player's game on launch. The retry reads pre-envelope saves written before `entryDirection` existed. | Task 13 |
 
 A bare `JSON.parse(x) as T` is an unchecked assertion, not a parse: TypeScript erases it and bad data flows on silently. Where the table says *throws*, validate the shape and throw with a message naming the offending record and field.
+
+**A cast is not a parse.** `x as Topic` is erased at runtime and checks nothing; Kotlin's `Topic.valueOf()` throws. This bug class has now appeared twice — Task 6 (a missing `correctIndex` became `-1`, so no answer was ever correct and every door stayed shut) and Task 7 (a corrupt `DoorState` made a Door report itself as a gate). At every trust boundary where the Kotlin threw, validate against the exported member list (`TOPICS`, `DIFFICULTIES`, `COMPLEXITIES`, `DIRECTIONS`, `DOOR_STATES`) and fail with a message naming the field and its legal values. Reviewers should treat an unvalidated `as` on external data as a finding.
 
 **Never modify anything under `../mindmaze/`.** It is the reference, and it still has to build and run for Android.
 
