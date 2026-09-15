@@ -86,6 +86,16 @@ export const deserializeSavedGame = (json: string): SavedGame => {
     throw new NotEnvelopeError('not a SavedGame envelope: missing envelope fields')
   }
 
+  // The envelope IS confirmed to be an envelope at this point (checked above), so a wrong
+  // envelopeVersion is corruption, not "not an envelope" — there is no migration to run yet, so
+  // an unrecognised version is rejected the same way a bad GameState.version is, rather than
+  // silently accepted or guessed at.
+  if (parsed.envelopeVersion !== ENVELOPE_VERSION) {
+    throw new Error(
+      `corrupt save: envelope version ${JSON.stringify(parsed.envelopeVersion)}, expected ${ENVELOPE_VERSION}`,
+    )
+  }
+
   const entryDirection = parsed.entryDirection
   if (entryDirection !== null && !DIRECTIONS.includes(entryDirection as Direction)) {
     throw new Error(`corrupt save: entryDirection must be a Direction or null, got ${JSON.stringify(entryDirection)}`)

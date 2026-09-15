@@ -53,6 +53,18 @@ describe('SettingsStore', () => {
     expect([...loaded.topics].sort()).toEqual([...settings.topics].sort())
   })
 
+  it('an explicitly-saved empty topic set reloads as all topics', async () => {
+    // Pins the documented divergence from Kotlin's SharedPreferences.getStringSet, which
+    // substitutes the default only when the key is absent — an explicitly-persisted empty set
+    // round-trips as empty there. This is unreachable through the ported UI (MenuScreen.kt
+    // guards every toggle so the last topic cannot be deselected), and the fallback-to-all
+    // behaviour is the safer one if it were ever reached, so it is kept and pinned here rather
+    // than only described in a comment.
+    await store.save({ topics: new Set(), difficulty: 'ADULT', complexity: 'HARD' })
+    const loaded = await store.load()
+    expect([...loaded.topics].sort()).toEqual([...TOPICS].sort())
+  })
+
   it('default musicEnabled is true', async () => {
     expect(await store.musicEnabled()).toBe(true)
   })

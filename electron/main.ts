@@ -43,6 +43,13 @@ ipcMain.handle('store:read', async (_e, name: string): Promise<string | null> =>
 })
 
 ipcMain.handle('store:write', async (_e, name: string, json: string): Promise<void> => {
+  // A Buffer or TypedArray is structured-clone-transferable over ipcRenderer.invoke and would
+  // otherwise pass straight through to writeFile, writing binary into what must stay a JSON
+  // slot — unlike an object or number (which throw a TypeError from writeFile itself), a
+  // Buffer is accepted silently. Reject anything that isn't a plain string before it touches disk.
+  if (typeof json !== 'string') {
+    throw new Error(`Refusing to write non-string payload to ${name}`)
+  }
   await writeFile(resolveStorePath(name), json, 'utf-8')
 })
 

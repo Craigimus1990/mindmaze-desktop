@@ -47,6 +47,17 @@ export class SettingsStore {
     const stored = await this.readStored()
     const difficulty = isValidDifficulty(stored.difficulty) ? stored.difficulty : DEFAULT_DIFFICULTY
     const complexity = isValidComplexity(stored.complexity) ? stored.complexity : DEFAULT_COMPLEXITY
+    // Deliberate divergence from Kotlin: `SharedPreferences.getStringSet(key, default)`
+    // substitutes the default only when the KEY is absent, so an explicitly-persisted empty
+    // set there round-trips as empty. Here, an explicitly-saved empty topic set also falls back
+    // to all topics (the `.length > 0` guard below applies regardless of whether the key was
+    // present).
+    //
+    // This state is unreachable through the UI as ported: MenuScreen.kt guards every topic
+    // toggle with `if (next.isNotEmpty())`, so a player can never deselect their last topic, and
+    // Task 14's menu must keep that same guard for this to stay unreachable. Kept as the safer
+    // behaviour anyway, since an empty topic set would otherwise push `TriviaRepository` onto
+    // its whole-bank fallback rather than the menu's intended selection.
     const topics = isValidTopics(stored.topics) && stored.topics.length > 0
       ? new Set(stored.topics)
       : new Set(TOPICS)

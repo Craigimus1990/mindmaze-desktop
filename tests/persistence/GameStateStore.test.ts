@@ -157,4 +157,25 @@ describe('GameStateStore', () => {
     )
     await expect(store.loadActive()).resolves.toBeNull()
   })
+
+  /**
+   * An envelope with a well-formed inner state but an unrecognised `envelopeVersion` is an
+   * envelope (all three top-level keys present), so it must NOT be retried as legacy — it is
+   * corruption, and the store degrades it to null rather than throwing or guessing.
+   */
+  it('an envelope with an unknown envelopeVersion loads as null, not as legacy', async () => {
+    const state = sampleState()
+    const goodEnvelope = JSON.parse(
+      JSON.stringify({
+        envelopeVersion: 1,
+        state: JSON.parse(serializeGameState(state)),
+        entryDirection: null,
+      }),
+    )
+    bridge.__files.set(
+      'game_state.json',
+      JSON.stringify({ ...goodEnvelope, envelopeVersion: 99 }),
+    )
+    await expect(store.loadActive()).resolves.toBeNull()
+  })
 })
