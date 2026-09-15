@@ -2291,19 +2291,22 @@ const placements = JSON.parse(
   readFileSync(join(root, 'src/assets/data/character_placements.json'), 'utf-8'),
 )
 
+// Placements reference a character by ID ("mouse_alchemist"); the drawable is that id with a
+// "char_" prefix ("char_mouse_alchemist.webp"), the mapping CharacterCatalog owns. Checking for
+// names that already start with "char_" would match nothing and pass vacuously.
 const missing = []
-const names = new Set()
-const walk = (node) => {
-  if (typeof node === 'string') { names.add(node); return }
-  if (Array.isArray(node)) { node.forEach(walk); return }
-  if (node && typeof node === 'object') {
-    for (const [k, v] of Object.entries(node)) { names.add(k); walk(v) }
+const ids = new Set()
+for (const entries of Object.values(placements.placements ?? {})) {
+  for (const entry of entries) {
+    if (entry && typeof entry.character === 'string') ids.add(entry.character)
   }
 }
-walk(placements)
-
-for (const name of names) {
-  if (name.startsWith('char_') && !drawables.has(name)) missing.push(name)
+if (ids.size === 0) {
+  console.error('No character ids found in character_placements.json — the check would pass vacuously.')
+  process.exit(1)
+}
+for (const id of ids) {
+  if (!drawables.has(`char_${id}`)) missing.push(`char_${id} (id "${id}")`)
 }
 
 if (missing.length > 0) {
@@ -2311,7 +2314,7 @@ if (missing.length > 0) {
   for (const m of missing) console.error(`  ${m}`)
   process.exit(1)
 }
-console.log(`OK: ${drawables.size} drawables, ${names.size} referenced names resolve.`)
+console.log(`OK: ${drawables.size} drawables; all ${ids.size} referenced character ids resolve.`)
 ```
 
 Add to `package.json` scripts: `"check-assets": "node scripts/check-assets.mjs"`.
