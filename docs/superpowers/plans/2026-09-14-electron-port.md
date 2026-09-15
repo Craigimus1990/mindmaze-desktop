@@ -2380,8 +2380,11 @@ describe('RoomGeometry', () => {
   })
 
   it('a wider-than-pane asset is cropped horizontally, moving side doors outward', () => {
-    // A 0.16 door lands at 0.136 on a 1.667 asset — the case the doc comment cites.
-    expect(projectX(DOOR_LEFT_X, 1.667, 1.25)).toBeCloseTo(0.136, 2)
+    // A 0.16 door lands at 0.0466 on a 1.667 asset against the current 1.25 spec.
+    // NB the doc comment's "0.136" figure is historical: it was computed against the OLD
+    // SPEC_ASPECT of 1.556 (solving backwards, 0.136 needs a pane aspect of 1.557) and became
+    // stale when the spec moved to 1.25 for tablets. Assert the current value, not the comment's.
+    expect(projectX(DOOR_LEFT_X, 1.667, 1.25)).toBeCloseTo(0.0466, 3)
     expect(visibleHeightFraction(1.667, 1.25)).toBeCloseTo(1)
   })
 
