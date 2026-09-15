@@ -2693,7 +2693,8 @@ git commit -m "feat: add ImageAssetManager with async preloading"
 ### Task 12: Canvas renderers
 
 **Files:**
-- Create: `src/rendering/RoomRenderer.ts`, `src/rendering/MinimapRenderer.ts`, `src/rendering/RoomTreasure.ts`
+- Create: `src/rendering/backdropName.ts`, `src/rendering/RoomRenderer.ts`, `src/rendering/MinimapRenderer.ts`, `src/rendering/RoomTreasure.ts`
+- Test: `tests/rendering/backdropName.test.ts`, `tests/rendering/RoomTreasure.test.ts`
 
 **Interfaces:**
 - Consumes: `RoomGeometry`, `ImageAssetManager`, `PlacementMap`, `CharacterCatalog`, `ExitLayout`, models.
@@ -2718,7 +2719,52 @@ Keep the fraction constants exactly: `TREASURE_HEIGHT_FRACTION = 0.13`, `KEY_HEI
 
 Backdrops are drawn **center-cropped (cover), never stretched** — the doc comment explains that stretching squashed each asset by a different factor and distorted door shape. Compute the source rect with `RoomGeometry.visibleWidthFraction`/`visibleHeightFraction` so drawing and hit-testing share one projection.
 
-- [ ] **Step 1: Write `RoomTreasure.ts`**
+- [ ] **Step 1: Write `src/rendering/backdropName.ts` — which backdrop a room shows**
+
+Two pure functions live on Kotlin's `ImageAssetManager` beside the bitmap loading that Task 11
+replaced. They are logic, not I/O, so they belong here rather than in the loader. Port them from
+`../mindmaze/app/src/main/kotlin/com/mindmaze/app/rendering/ImageAssetManager.kt` (lines ~56-125),
+carrying their doc comments.
+
+`assetName(exits, layout)` maps which of the three on-screen slots have live exits to one of
+eight base names, using `ExitLayout` so it follows the player's facing:
+
+```ts
+export const assetName = (
+  exits: ReadonlyMap<Direction, ExitType>,
+  layout: ExitLayout = forEntry(null),
+): string => {
+  const live = (d: Direction) => { const e = exits.get(d); return e !== undefined && e.type !== 'Absent' }
+  const hasLeft = live(layout.left), hasCenter = live(layout.center), hasRight = live(layout.right)
+  if (hasLeft && hasCenter && hasRight) return 'room_with_left_center_right'
+  if (hasLeft && hasCenter) return 'room_with_left_center'
+  if (hasLeft && hasRight) return 'room_with_left_right'
+  if (hasCenter && hasRight) return 'room_with_center_right'
+  if (hasLeft) return 'room_with_left'
+  if (hasCenter) return 'room_with_center'
+  if (hasRight) return 'room_with_right'
+  return 'room_deadend'
+}
+```
+
+`themeFor(roomId)` and `themedAssetName(base, roomId)` pick the decor. **The theme is keyed on
+room id, never on the door configuration** — carry that comment, it records a real bug: the config
+changes as the player turns around (the same room reads as `room_with_left` from one side and
+`room_with_center_right` from the other), so selecting a theme per-config made a room change decor
+*and its inhabitant* purely because the player backtracked. Keying on the persisted room id keeps
+both stable across a turn and across save/reload without storing anything. `floorMod` because a
+negative id would otherwise throw. The 11 themes, in order: `stone_corridor`, `great_library`,
+`alchemy_study`, `map_room`, `armory`, `astronomer_tower`, `great_hall`, `cellar_vault`, `chapel`,
+`music_room`, `garden_courtyard`. `themedAssetName` returns `base` unchanged when no theme covers
+a configuration, keeping the eight placeholder drawables as a working fallback rather than showing
+a wall where a door is.
+
+Port `ImageAssetManagerTest.kt`'s four cases (`no exits maps to deadend`, `left exit only`,
+`center and right exits`, `all three exits`) into `tests/rendering/backdropName.test.ts`, and add
+coverage that `themedAssetName` is stable for a room id across different exit configurations —
+that is the property the bug above was about. Verify the composed names resolve via `hasAsset`.
+
+- [ ] **Step 2: Write `RoomTreasure.ts`**
 
 Port `RoomTreasure.kt`, which decides which treasure sprite a room shows and what it is worth.
 Port `RoomTreasureTest.kt` with it.
@@ -2729,29 +2775,29 @@ Port `RoomTreasureTest.kt` with it.
 would not wrap at 32 bits and would hand back different buckets — moving treasure sprites between
 rooms and failing `RoomTreasureTest`.
 
-- [ ] **Step 2: Run the RoomTreasure test**
+- [ ] **Step 3: Run the RoomTreasure test**
 
 Run: `npx vitest run tests/rendering/RoomTreasure.test.ts`
 Expected: PASS.
 
-- [ ] **Step 3: Write `MinimapRenderer.ts`**
+- [ ] **Step 4: Write `MinimapRenderer.ts`**
 
 Port `MinimapRenderer.kt`. It draws only visited rooms, hides cells outside the maze, and marks an uncollected key (commit `7813a7a`). No unit test — verified visually in Task 15.
 
-- [ ] **Step 4: Write `RoomRenderer.ts`**
+- [ ] **Step 5: Write `RoomRenderer.ts`**
 
 Port `RoomRenderer.kt`: backdrop (cover-scaled), character sprite, pickups, treasure, windlass, door overlays, HUD. Take `width`/`height` as explicit arguments, as the Kotlin version already does.
 
-- [ ] **Step 5: Typecheck**
+- [ ] **Step 6: Typecheck**
 
 Run: `npm run typecheck`
 Expected: exit 0.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add -A
-git commit -m "feat: port the room and minimap renderers to canvas"
+git commit -m "feat: port the backdrop naming and the canvas renderers"
 ```
 
 ---
