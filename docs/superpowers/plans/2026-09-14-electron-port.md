@@ -3068,6 +3068,12 @@ question rather than removing it.
 
 - [ ] **Step 3: Write the six screens**
 
+**`MenuScreen` — one guard you must carry.** Kotlin's topic chips wrap every toggle in
+`if (next.isNotEmpty())` (`MenuScreen.kt:79`), so a player can never deselect their last topic.
+Keep it. Without it a player can reach an empty topic set, which pushes `TriviaRepository` onto
+its whole-bank fallback and silently ignores their selection — and `SettingsStore` treats a stored
+empty set as "use all topics", so the setting would not even round-trip as chosen.
+
 Port each Compose screen to a React component, reusing the parchment styling assets (`ui_panel_tile`, `ui_answer_plate`, `ui_corner_flourish`). Keep every user-facing string identical.
 
 Port `MenuBackdrop.kt` (46 lines) alongside `MenuScreen`: it picks the menu backdrop from
