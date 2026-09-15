@@ -57,6 +57,17 @@ export const movedDirectionFor = (
 export const isConfirmedMove = (events: readonly GameEvent[]): boolean =>
   events.some((e) => e.type === 'Moved' || e.type === 'TreasureFound')
 
+/**
+ * Whether a `turnWindlass()` call actually put a question on screen.
+ *
+ * This is the gate on `windlassPending`. The engine sets its own `pendingWindlassRoom` on the
+ * very statement that emits `TriviaRequired`, so this single event is an exact readout of whether
+ * `answerWindlass()` will accept an answer next — which is what the flag has to agree with. See
+ * the `TurnWindlass` case for what goes wrong when it does not.
+ */
+export const posedQuestion = (events: readonly GameEvent[]): boolean =>
+  events.some((e) => e.type === 'TriviaRequired')
+
 /** What {@link runAction} needs from the world, so it can be driven by a test double. */
 export interface ActionContext {
   readonly engine: GameEngine
@@ -111,7 +122,16 @@ export const runAction = (action: PlayerAction, ctx: ActionContext): ActionResul
         // question and done", which is how a windlass got raised after a single answer.
         if (result.some((e) => e.type === 'WindlassProgressed')) {
           const next = engine.turnWindlass().filter((e) => e.type !== 'WindlassChamberFound')
-          return { events: [...result, ...next], windlassPending: true, ran: true }
+          // Gated on the posed question for the same reason as the TurnWindlass case below,
+          // though unlike that one this is defence rather than a live bug: every early return in
+          // turnWindlass() is already ruled out here (a WindlassProgressed proves the lock is
+          // Barred, the room holds an unraised windlass, and the bank served a question a moment
+          // ago — and nextQuestion() recycles its used set rather than running dry, so it returns
+          // null only for a pool that was empty at construction). The check costs nothing and
+          // means the flag can never disagree with the engine, whatever a future early return
+          // adds. The filter above removes only WindlassChamberFound, never a TriviaRequired, so
+          // it cannot hide the posed question from this check.
+          return { events: [...result, ...next], windlassPending: posedQuestion(next), ran: true }
         }
         return { events: result, windlassPending: false, ran: true }
       }
@@ -140,8 +160,23 @@ export const runAction = (action: PlayerAction, ctx: ActionContext): ActionResul
     case 'CollectTreasure':
       return { events: engine.collectCoin(action.points), windlassPending, ran: true }
 
-    case 'TurnWindlass':
-      return { events: engine.turnWindlass(), windlassPending: true, ran: true }
+    case 'TurnWindlass': {
+      const events = engine.turnWindlass()
+      // DELIBERATE DIVERGENCE FROM KOTLIN. GameViewModel.kt:340 arms windlassPending
+      // unconditionally, which is a softlock: turnWindlass() has four early returns that pose no
+      // question — the lock is not Barred, the room holds no windlass, that windlass is already
+      // raised, or the bank is empty — and the flag is then left stuck true. The next DOOR answer
+      // routes to answerWindlass(), which finds no pendingWindlassRoom, replies
+      // InvalidAction("No windlass question pending"), and swallows the answer: the trivia dialog
+      // stays up with no way out. Reachable by clicking an already-raised windlass, or the winch
+      // circle in a non-windlass room, then walking to any closed door.
+      //
+      // Arming on the posed question instead is the correct condition, not merely a safer one:
+      // the engine sets pendingWindlassRoom on the same statement that emits TriviaRequired, so
+      // "a question was posed" and "the engine will accept an answer" are one and the same. The
+      // identical two-line change would fix the Android build.
+      return { events, windlassPending: posedQuestion(events), ran: true }
+    }
 
     // Hints are collected on entry; same reasoning as UseKey.
     case 'CollectPickup':

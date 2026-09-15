@@ -2,7 +2,7 @@
   "name": "mindmaze_electron",
   "version": "1.0.0",
   "description": "",
-  "main": "dist-electron/main.js",
+  "main": "dist-electron/main.cjs",
   "type": "module",
   "directories": {
     "doc": "docs"

@@ -241,11 +241,64 @@ describe('runAction', () => {
       expect(r.windlassPending).toBe(false)
     })
 
-    it('TurnWindlass sets the flag', () => {
-      const e = new FakeEngine()
+    it('TurnWindlass arms the flag when a question is actually posed', () => {
+      const e = new FakeEngine().script_('turnWindlass', [
+        { type: 'WindlassChamberFound', roomId: 4 },
+        {
+          type: 'TriviaRequired',
+          direction: 'NORTH',
+          question: {
+            id: 'q', topic: 'MATH', difficulty: 'KINDERGARTEN',
+            question: 'q?', answers: ['a', 'b', 'c', 'd'], correctIndex: 0,
+          },
+        },
+      ])
       const r = runAction({ type: 'TurnWindlass' }, ctx(e))
       expect(e.calls).toEqual(['turnWindlass'])
       expect(r.windlassPending).toBe(true)
+    })
+
+    // DELIBERATE DIVERGENCE FROM KOTLIN, and the reason these cases exist. GameViewModel.kt:340
+    // arms the flag unconditionally; turnWindlass() has four early returns that pose no question,
+    // and a flag left stuck true routes the next DOOR answer to answerWindlass(), which finds no
+    // pending room, swallows the answer, and strands the player in a trivia dialog with no way
+    // out. Each case below is one of those four refusals.
+    it.each([
+      ['an already-raised windlass', { type: 'WindlassAlreadyRaised', roomId: 4 } as GameEvent],
+      ['a room with no windlass', { type: 'InvalidAction', reason: 'Nothing to turn here' } as GameEvent],
+      ['an empty question bank', { type: 'InvalidAction', reason: 'No trivia questions available' } as GameEvent],
+    ])('TurnWindlass leaves the flag clear when the turn is refused: %s', (_label, event) => {
+      const e = new FakeEngine().script_('turnWindlass', [event])
+      const r = runAction({ type: 'TurnWindlass' }, ctx(e))
+      expect(r.windlassPending).toBe(false)
+    })
+
+    it('a refused turn does not swallow the next door answer', () => {
+      // The end-to-end shape of the softlock: refuse a turn, then answer a door question. With
+      // the flag stuck the second call would reach answerWindlass() and the answer would vanish.
+      const e = new FakeEngine().script_('turnWindlass', [
+        { type: 'WindlassAlreadyRaised', roomId: 4 },
+      ])
+      const turned = runAction({ type: 'TurnWindlass' }, ctx(e))
+      runAction(
+        { type: 'SubmitAnswer', index: 1 },
+        ctx(e, { before: trivia('NORTH', 2), windlassPending: turned.windlassPending }),
+      )
+      expect(e.calls).toEqual(['turnWindlass', 'submitAnswer(1,2)'])
+    })
+
+    it('a chained re-ask that poses no question leaves the flag clear', () => {
+      // The same gate on the nested turnWindlass() inside the progressed branch. Not reachable
+      // today — a WindlassProgressed rules out every early return, and nextQuestion() recycles
+      // rather than running dry — so this pins the invariant rather than a live bug.
+      const e = new FakeEngine()
+        .script_('answerWindlass', [{ type: 'WindlassProgressed', roomId: 4, banked: 1, needed: 3 }])
+        .script_('turnWindlass', [{ type: 'InvalidAction', reason: 'No trivia questions available' }])
+      const r = runAction(
+        { type: 'SubmitAnswer', index: 2 },
+        ctx(e, { before: trivia('NORTH', 2), windlassPending: true }),
+      )
+      expect(r.windlassPending).toBe(false)
     })
   })
 
