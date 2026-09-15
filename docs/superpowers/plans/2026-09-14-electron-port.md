@@ -3063,7 +3063,33 @@ question rather than removing it.
 
 - a `<canvas>` sized to a fixed internal resolution, scaled by CSS, multiplied by `devicePixelRatio`
 - on each `uiState` change, call `drawRoom` and `drawMinimap`
-- `onClick`: convert client coords to canvas fractions, then use `RoomGeometry.tapBoundaries` to decide which door was clicked — **the same projection used to draw**
+- `onClick`: port `GameScreen.kt`'s `handleTap` exactly. Read it first — its priority order is
+  deliberate and each step carries the reasoning:
+
+  1. **Windlass first**, if this is a `Barred` lock's windlass room. Hit-test a circle at
+     projected `(0.50, 0.70)` with radius `0.22`. The Kotlin comment explains why it may overlap
+     the centre door's region: a windlass chamber is a dead end with no centre door, so nothing is
+     stolen.
+  2. **Treasure next, and it wins.** `RoomTreasure.forRoom(room.id, room.pickup)`, hit-tested at
+     projected `(treasure.x, treasure.y)` within `RoomTreasure.HIT_RADIUS`. The room pane doubles
+     as the movement control, so a coin and a door can both claim one click; coins are kept clear
+     of every door centre by more than their own hit radius, so this cannot swallow a click meant
+     for a doorway.
+  3. **Doors last**, by x-fraction against `RoomGeometry.tapBoundaries(sourceAspect, paneAspect)`
+     — below the left edge → `layout.left`, below the right edge → `layout.center`, else
+     `layout.right`.
+
+  All hit-testing compares **in projected screen space**, through the same `projectX`/`projectY`
+  the renderer draws with. That shared projection is the invariant `RoomGeometry` exists to
+  protect — computing clicks any other way is how doors and their click regions drift apart.
+
+  Then map the exit to an action: `Absent` → ignore; `Door` OPEN → `Move`; `Door` CLOSED or
+  LOCKED → `AttemptDoor`; **`Gate` → `Move` regardless of whether it is open**. That last one
+  records a real bug — a closed gate used to return silently, which is why tapping the barred
+  treasure door did nothing at all: the engine never saw the click, so it never got to explain
+  what raises it. `Move` lets the engine answer with `TreasureBlocked`.
+
+  Layout: the room pane is `weight(0.7f)` of the width with the minimap taking the remainder.
 - `onKeyDown`: arrows/WASD → `Move`/`AttemptDoor`, `A`-`D` → `SubmitAnswer`, `Esc` → dismiss, `H` → `UseHint`, `K` → `UseKey`
 
 - [ ] **Step 3: Write the six screens**
