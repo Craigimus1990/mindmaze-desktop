@@ -1,8 +1,58 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
+import { readFile, writeFile, unlink } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+/**
+ * The only filenames the renderer may read, write, or delete via the `store:*` IPC channels.
+ *
+ * This is what stops a compromised renderer — `contextIsolation`/`sandbox` deny it `fs` and
+ * `path` directly, but the bridge itself is a raw string channel, so the allowlist plus the
+ * userData-confinement check in `resolveStorePath` are the actual security boundary. Do not add
+ * a filename here without also considering what a renderer that only wanted to read this file
+ * could do with write/delete access to it too.
+ */
+const ALLOWED_FILES = new Set([
+  'game_state.json',
+  'saved_game.json',
+  'settings.json',
+  'custom_questions.json',
+])
+
+const resolveStorePath = (name: string): string => {
+  if (!ALLOWED_FILES.has(name)) throw new Error(`Refusing to access ${name}`)
+  const userDataDir = app.getPath('userData')
+  const resolved = path.join(userDataDir, name)
+  // Defence in depth: even though ALLOWED_FILES only contains bare filenames, confirm the
+  // resolved path never escapes userData (e.g. via a name containing ".." that somehow got
+  // this far) before touching disk.
+  if (path.dirname(resolved) !== userDataDir) {
+    throw new Error(`Refusing to access ${name}`)
+  }
+  return resolved
+}
+
+ipcMain.handle('store:read', async (_e, name: string): Promise<string | null> => {
+  try {
+    return await readFile(resolveStorePath(name), 'utf-8')
+  } catch {
+    return null
+  }
+})
+
+ipcMain.handle('store:write', async (_e, name: string, json: string): Promise<void> => {
+  await writeFile(resolveStorePath(name), json, 'utf-8')
+})
+
+ipcMain.handle('store:delete', async (_e, name: string): Promise<void> => {
+  try {
+    await unlink(resolveStorePath(name))
+  } catch {
+    // Already gone is success.
+  }
+})
 
 const createWindow = () => {
   const win = new BrowserWindow({
