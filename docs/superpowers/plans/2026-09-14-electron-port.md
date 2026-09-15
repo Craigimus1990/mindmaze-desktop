@@ -910,7 +910,7 @@ const bfsWithKeys = (maze: Maze): boolean => {
 Run: `npx vitest run tests/engine/MazeSolver.test.ts`
 Expected: PASS (6 tests).
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -1924,7 +1924,7 @@ const shuffleAnswers = (q: TriviaQuestion): TriviaQuestion => {
 Run: `npx vitest run tests/engine/ScoreCalculator.test.ts tests/engine/TriviaRepository.test.ts`
 Expected: PASS (7 + 9 = 16 tests).
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -2032,7 +2032,7 @@ Structural notes for the port:
 Run: `npx vitest run tests/engine/`
 Expected: PASS — every engine suite green. This is the completion criterion for the engine port.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -2175,7 +2175,7 @@ Port `reduce` and `applyHint`. Every user-facing string is copied **exactly**, i
 Run: `npx vitest run tests/ui/ tests/util/`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -2327,7 +2327,7 @@ Expected: `OK: 133 drawables, N referenced names resolve.` If names are missing,
 Run: `npx vitest run tests/rendering/assetManifest.test.ts`
 Expected: PASS (3 tests).
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -2506,7 +2506,7 @@ Read `../mindmaze/app/src/main/kotlin/com/mindmaze/app/rendering/PlacementMap.kt
 Run: `npx vitest run tests/rendering/`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -2793,7 +2793,7 @@ Port `RoomRenderer.kt`: backdrop (cover-scaled), character sprite, pickups, trea
 Run: `npm run typecheck`
 Expected: exit 0.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -2985,7 +2985,7 @@ Add `src/types/window.d.ts` declaring `interface Window { mindmaze: MindMazeBrid
 Run: `npx vitest run tests/persistence/`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -3168,7 +3168,7 @@ Verify by hand:
 - keyboard alone can play a full turn
 - the window resizes without misaligning doors
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -3192,28 +3192,46 @@ Expected: every suite green. Record the count.
 Run: `npm run typecheck` and `npm run check-assets`
 Expected: both exit 0.
 
-- [ ] **Step 2: Play a full game at each complexity**
+- [ ] **Step 2: Launch the app the way a packaged build does**
+
+Not via `npm run dev`, and not by pointing Electron at `dist-electron/main.cjs` by hand — resolve
+`package.json`'s `"main"` field, exactly as Electron does when it starts a packaged app:
+
+```bash
+npm run build
+node -e "const p=require('./package.json'); console.log(p.main, require('fs').existsSync(p.main))"
+```
+Both must be `dist-electron/main.cjs true`. Then launch through that entry and confirm a window
+opens with the preload bridge present (`Object.keys(window.mindmaze).length === 10`).
+
+**Why this step exists:** `"main"` said `dist-electron/main.js` while the build emits `main.cjs`,
+so the packaged app could not launch at all. It survived twelve tasks because every check — the
+dev server, and every probe — loaded `main.cjs` by explicit path, which masked it completely. It
+would have surfaced in Task 16 as "the built app won't start", a long way from its cause. Any
+check that bypasses the real entry point can hide this whole class of defect.
+
+- [ ] **Step 3: Play a full game at each complexity**
 
 For SIMPLE, MEDIUM, and HARD: start a game, reach the treasure, confirm the results screen totals. On MEDIUM confirm the treasure door is locked and a key opens it; on HARD confirm two windlass chambers bar it and three correct answers raise each.
 
-- [ ] **Step 3: Compare rendering side by side**
+- [ ] **Step 4: Compare rendering side by side**
 
 Screenshot the same room type in both builds (the Android app can run in an emulator, or use `../mindmaze/samples/*.png`). Check door alignment, sprite scale, and HUD placement. Note any differences in `docs/verification.md`, with a judgement on whether each is cosmetic or a real drift.
 
-- [ ] **Step 4: Verify music**
+- [ ] **Step 5: Verify music**
 
 Confirm music starts on the first click rather than at load, loops, and stops when the setting
 is turned off. Confirm the setting survives a relaunch.
 
-- [ ] **Step 5: Verify persistence**
+- [ ] **Step 6: Verify persistence**
 
 Start a game, quit mid-maze, relaunch: the game resumes in the same room facing the same way. Change settings, relaunch: they persist. Confirm the files exist under `app.getPath('userData')`.
 
-- [ ] **Step 6: Write `docs/verification.md`**
+- [ ] **Step 7: Write `docs/verification.md`**
 
 Record test counts, what was played, screenshot comparisons, and every known difference from the Android build — including the preserved mid-trivia save quirk.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -3387,7 +3405,7 @@ Cover: what the app is, how to run it in development, how to run the tests, how 
 Run: `npx --yes @action-validator/cli .github/workflows/build.yml` (or inspect by hand — it cannot be executed locally).
 Expected: no syntax errors.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
