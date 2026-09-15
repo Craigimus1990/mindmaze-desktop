@@ -81,8 +81,14 @@ const drawCover = (
   )
 }
 
+// Emoji families belong here: withIconStyle draws real emoji glyphs (door/pickup markers), and
+// those families are wide/monospaced-ish by design so the glyphs render at a consistent size.
 const iconFont = "64px 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif"
-const hudFont = "28px 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif"
+// Plain text only (digits, letters, colons) — never route this through an emoji family. Noto
+// Color Emoji, if installed, renders latin digits/punctuation as wide monospaced glyphs, which
+// blew the centred HUD string out past both edges of the pane. Kotlin's hudPaint used Android's
+// default sans at the same 28px with no emoji fallback; a plain UI font stack is the equivalent.
+const hudFont = "28px system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
 
 const withIconStyle = (ctx: CanvasRenderingContext2D): void => {
   ctx.font = iconFont
