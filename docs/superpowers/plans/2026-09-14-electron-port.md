@@ -910,7 +910,7 @@ const bfsWithKeys = (maze: Maze): boolean => {
 Run: `npx vitest run tests/engine/MazeSolver.test.ts`
 Expected: PASS (6 tests).
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add -A
@@ -2032,7 +2032,7 @@ Structural notes for the port:
 Run: `npx vitest run tests/engine/`
 Expected: PASS — every engine suite green. This is the completion criterion for the engine port.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add -A
@@ -2175,7 +2175,7 @@ Port `reduce` and `applyHint`. Every user-facing string is copied **exactly**, i
 Run: `npx vitest run tests/ui/ tests/util/`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add -A
@@ -2985,7 +2985,7 @@ Add `src/types/window.d.ts` declaring `interface Window { mindmaze: MindMazeBrid
 Run: `npx vitest run tests/persistence/`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add -A
@@ -3351,23 +3351,50 @@ jobs:
 
 `fail-fast: false` matters: a Windows failure should not cancel the macOS job, since macOS is the one that cannot be re-run locally.
 
-- [ ] **Step 4: Write the README**
+- [ ] **Step 4: Sweep the deferred minors**
+
+These accumulated across the port and were each judged not worth a fix round at the time. Do them
+now, while the build files are already open:
+
+- **Remove `vite-plugin-electron-renderer` from `devDependencies`** (Task 1). It was dropped from
+  `vite.config.ts` because it forced ESM onto the preload build; nothing imports it. Confirm
+  `npm run build` still emits `main.cjs` and `preload.cjs` afterwards.
+- **Wire `check-assets` into CI** (Task 9). The workflow's `test` job already runs it — confirm
+  that is so. It validates that every character id in `character_placements.json` resolves to a
+  drawable, and until it runs automatically it only catches a broken reference when someone
+  remembers to invoke it.
+- **Wrap `JSON.parse` in `scripts/check-assets.mjs`** (Task 9) so a malformed placements file
+  reports which file failed instead of dumping a raw Node stack trace. The exit code is already
+  correct; this is message quality only.
+- **Delete the dead `break` at `src/ui/UiStateReducer.ts:93`** (Task 8), left after an inner
+  switch whose every case returns.
+- **Decide `tsconfig.node.json`** (Task 1). It is currently inert — `tsconfig.json`'s own
+  `include` is what actually typechecks `vite.config.ts` and `vitest.config.ts` (verified: moving
+  the file aside leaves coverage at 2/2). Either wire it up via project references or delete it
+  and note that the flat `include` covers those files. Do not leave a file that looks load-bearing
+  and is not.
+
+Leave alone: the `defaultRng()` seed expression (Task 3 — correct, merely unidiomatic) and
+`buildRoomsWithFeatures`' trimmed comment (Task 5 — the trimmed sentence was redundant in the
+Kotlin too).
+
+- [ ] **Step 5: Write the README**
 
 Cover: what the app is, how to run it in development, how to run the tests, how to build each platform, where the macOS build comes from and why, and the unsigned first-launch steps for both platforms.
 
-- [ ] **Step 5: Verify the workflow is well-formed**
+- [ ] **Step 6: Verify the workflow is well-formed**
 
 Run: `npx --yes @action-validator/cli .github/workflows/build.yml` (or inspect by hand — it cannot be executed locally).
 Expected: no syntax errors.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add -A
 git commit -m "chore: add packaging config and the CI build workflow"
 ```
 
-- [ ] **Step 7: Hand off to the user**
+- [ ] **Step 8: Hand off to the user**
 
 The repo is ready to push. Tell them:
 1. Create an empty GitHub repo (private is fine).
