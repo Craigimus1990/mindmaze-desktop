@@ -3008,13 +3008,56 @@ git commit -m "feat: add persistence over a sandboxed preload bridge"
 
 - [ ] **Step 1: Write `useGame.ts`**
 
+This is the port of `GameViewModel.kt` (378 lines, of which ~90 are voice handling that is out of
+scope). **Read that file in full before writing** — it holds several behaviours that are easy to
+lose and that nothing else will catch.
+
 It must:
 - hold `GameEngine` and `TriviaRepository` instances in a ref
 - expose `uiState` and `dispatch`
 - map each `PlayerAction` to the matching engine call, then `reduce(current, events, engine.getState(), action)`
-- record `entryDirection` as `opposite(movedDirection)` after each move, matching `GameViewModel`
-- autosave to `saveActive` after every state change
-- tick `elapsedMillis` on a 1-second interval while `InGame`
+- tick `elapsedMillis` on a 1-second interval while `InGame` or `Trivia`, recomputing it as
+  `now - sessionStart` rather than incrementing a counter, and persisting on every tick
+- on resume, set `sessionStart = now - state.elapsedMillis` so the clock continues rather than
+  restarting — a resumed game must not reset its time bonus
+
+**Five behaviours to preserve exactly, each with a comment in the Kotlin explaining it:**
+
+1. **`entryDirection` updates only on a *confirmed* move.** Compute the candidate direction from
+   the action (`Move`/`AttemptDoor` → its direction; `MoveBack` → the current `entryDirection`;
+   `SubmitAnswer` → the pending `Trivia.direction`), call the engine, and only then set
+   `entryDirection = opposite(candidate)` **if the returned events contain `Moved` or
+   `TreasureFound`**. The engine can reject a move outright or defer it behind a question, and in
+   both cases the player stays put — re-framing the room then would turn the view while the player
+   has not moved.
+
+2. **The windlass question chain.** Track a `windlassPending` flag. `TurnWindlass` sets it and
+   calls `engine.turnWindlass()`. A `SubmitAnswer` while it is set routes to
+   `engine.answerWindlass(correct)` — NOT `submitAnswer` — because a wrong door answer merely
+   keeps the door shut while a wrong windlass answer discards banked progress. If the result
+   contains `WindlassProgressed`, immediately ask the next question by appending
+   `engine.turnWindlass()` (filtering out `WindlassChamberFound`, which must only fire once) and
+   keep the flag set. The Kotlin comment records why: making the player re-tap the winch between
+   questions "read as one question and done", which is how a windlass got raised after a single
+   answer.
+
+3. **`UseKey` and `CollectPickup` are no-ops that report themselves.** They return
+   `InvalidAction("Keys are used automatically")` and `InvalidAction("Pickups are collected
+   automatically")` without touching the engine. Keys are consumed automatically at a locked door
+   and hints are collected on entry, so the old manual actions would otherwise silently do nothing.
+
+4. **Stamp `entryDirection` onto the reduced state.** `UiStateReducer` builds `InGame`/`Trivia`
+   with no knowledge of `entryDirection` (it is tracked in the hook, not in `GameState`), so after
+   reducing, copy the just-updated value onto those two variants. `GameScreen` is a pure function
+   of `UiState` and derives `forEntry(...)` from it.
+
+5. **A completed game clears both save files** rather than persisting a finished state — otherwise
+   the menu would offer to resume a game that is already won.
+
+Also port `returnToMenu` (which must recompute `hasSavedGame` from the stores) and the question
+editor actions `openQuestions`/`saveQuestion`/`deleteQuestion`. Note the delete path: deleting a
+custom entry saved under a bundled id was an override, so dropping it restores the bundled
+question rather than removing it.
 
 - [ ] **Step 2: Write `GameHost.tsx` (the canvas host)**
 
