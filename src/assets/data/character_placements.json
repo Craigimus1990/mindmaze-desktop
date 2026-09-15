@@ -1,0 +1,3206 @@
+{
+  "placements": {
+    "room_deadend": [
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8928261889878314,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.221
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.7382347805493119,
+        "flip": false,
+        "height": 0.36792410296140865,
+        "x": 0.401
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8558873156541786,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.347
+      },
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8293806180218568,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.651
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      }
+    ],
+    "room_deadend_alchemy_study": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8293806180218568,
+        "flip": false,
+        "height": 0.32700148205536805,
+        "x": 0.651
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.8819289835034771,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.538
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8754185665411526,
+        "flip": false,
+        "height": 0.3986160686409391,
+        "x": 0.398
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8675130602297583,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.431
+      }
+    ],
+    "room_deadend_armory": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8428664817295293,
+        "flip": false,
+        "height": 0.35769344773489853,
+        "x": 0.661
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7819475801534916,
+        "flip": true,
+        "height": 0.4925520848116232,
+        "x": 0.311
+      },
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7912481758139553,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.323
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.9014602343904511,
+        "flip": false,
+        "height": 0.42372767692419133,
+        "x": 0.759
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.8958798769941728,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.511
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8693731793618511,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.373
+      }
+    ],
+    "room_deadend_astronomer_tower": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8293806180218568,
+        "flip": false,
+        "height": 0.33537201814978546,
+        "x": 0.651
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8928261889878314,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.221
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.7382347805493119,
+        "flip": false,
+        "height": 0.36792410296140865,
+        "x": 0.401
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8558873156541786,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.347
+      }
+    ],
+    "room_deadend_cellar_vault": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.86193270283348,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.472
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.9028553237395206,
+        "flip": false,
+        "height": 0.4804613104530203,
+        "x": 0.366
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      }
+    ],
+    "room_deadend_chapel": [
+      {
+        "character": "abbotess",
+        "feetY": 0.8070591884367438,
+        "flip": false,
+        "height": 0.3716443412255942,
+        "x": 0.689
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8549572560881322,
+        "flip": false,
+        "height": 0.3790848177539652,
+        "x": 0.734
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.8679780900127815,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.246
+      }
+    ],
+    "room_deadend_garden_courtyard": [
+      {
+        "character": "mice_children",
+        "feetY": 0.9628441657495119,
+        "flip": false,
+        "height": 0.24973959013346675,
+        "x": 0.504
+      },
+      {
+        "character": "vole_gardener",
+        "feetY": 0.8005487714744192,
+        "flip": true,
+        "height": 0.33397692880071594,
+        "x": 0.325
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.9121559193999844,
+        "flip": true,
+        "height": 0.3283965714044377,
+        "x": 0.819
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.7266090359737322,
+        "flip": true,
+        "height": 0.20051338107306077,
+        "x": 0.659
+      }
+    ],
+    "room_deadend_great_hall": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.8679780900127815,
+        "flip": false,
+        "height": 0.34141740532908693,
+        "x": 0.577
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.8158947543141843,
+        "flip": true,
+        "height": 0.4041964260372174,
+        "x": 0.188
+      },
+      {
+        "character": "mice_children",
+        "feetY": 0.7368396912002423,
+        "flip": false,
+        "height": 0.14889507515748684,
+        "x": 0.543
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.82984564780488,
+        "flip": true,
+        "height": 0.3386272266309478,
+        "x": 0.199
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.8861142515506859,
+        "flip": false,
+        "height": 0.36187871578210723,
+        "x": 0.467
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.8354260052011583,
+        "flip": true,
+        "height": 0.3051450822532782,
+        "x": 0.63
+      },
+      {
+        "character": "shrew_musician",
+        "feetY": 0.7191685594453612,
+        "flip": false,
+        "height": 0.2484114487244492,
+        "x": 0.689
+      }
+    ],
+    "room_deadend_great_library": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.7814825503704684,
+        "flip": false,
+        "height": 0.223299840441197,
+        "x": 0.635
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.8410063625974366,
+        "flip": false,
+        "height": 0.2939843674607217,
+        "x": 0.593
+      },
+      {
+        "character": "mouse_reader",
+        "feetY": 0.8670480304467352,
+        "flip": false,
+        "height": 0.21399924478073326,
+        "x": 0.791
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.9056455024376597,
+        "flip": false,
+        "height": 0.37675966883884926,
+        "x": 0.265
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.9847005655516018,
+        "flip": false,
+        "height": 0.3232812437911826,
+        "x": 0.225
+      }
+    ],
+    "room_deadend_map_room": [
+      {
+        "character": "hare_colonel",
+        "feetY": 0.8038039799555815,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.624
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.7670666270967496,
+        "flip": true,
+        "height": 0.37024925187652463,
+        "x": 0.613
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.7954334438611641,
+        "flip": false,
+        "height": 0.3409523755460637,
+        "x": 0.631
+      }
+    ],
+    "room_deadend_music_room": [
+      {
+        "character": "shrew_musician",
+        "feetY": 0.7614862697004713,
+        "flip": false,
+        "height": 0.31863094596095065,
+        "x": 0.625
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8558873156541786,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.347
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.735909631634196,
+        "flip": false,
+        "height": 0.3311867501025768,
+        "x": 0.504
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.9028553237395206,
+        "flip": false,
+        "height": 0.36001859665001446,
+        "x": 0.183
+      }
+    ],
+    "room_deadend_stone_corridor": [
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7777623121062829,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.696
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8726283878430134,
+        "flip": false,
+        "height": 0.3953608601597768,
+        "x": 0.715
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.9121559193999844,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.697
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8219401414934858,
+        "flip": true,
+        "height": 0.4148921110467507,
+        "x": 0.294
+      }
+    ],
+    "room_with_center": [
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.8814639537204539,
+        "flip": true,
+        "height": 0.33769716706490144,
+        "x": 0.29
+      },
+      {
+        "character": "abbotess",
+        "feetY": 0.8070591884367438,
+        "flip": false,
+        "height": 0.3716443412255942,
+        "x": 0.689
+      },
+      {
+        "character": "mice_children",
+        "feetY": 0.9628441657495119,
+        "flip": false,
+        "height": 0.24973959013346675,
+        "x": 0.605
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8219401414934858,
+        "flip": true,
+        "height": 0.4148921110467507,
+        "x": 0.294
+      },
+      {
+        "character": "elder_mouse",
+        "feetY": 0.7917132055969786,
+        "flip": false,
+        "height": 0.34048734576304057,
+        "x": 0.689
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.9628441657495119,
+        "flip": false,
+        "height": 0.4465141362923275,
+        "x": 0.73
+      },
+      {
+        "character": "vole_gardener",
+        "feetY": 0.8005487714744192,
+        "flip": true,
+        "height": 0.33397692880071594,
+        "x": 0.325
+      }
+    ],
+    "room_with_center_alchemy_study": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.7712518951439583,
+        "flip": false,
+        "height": 0.31723585661188114,
+        "x": 0.678
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.605
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8928261889878314,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.221
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8558873156541786,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.347
+      }
+    ],
+    "room_with_center_armory": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8926246685130105,
+        "flip": true,
+        "height": 0.3953608601597768,
+        "x": 0.339
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.9051804726546366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.333
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7414899890304743,
+        "flip": false,
+        "height": 0.4311681534525623,
+        "x": 0.649
+      },
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7489304655588452,
+        "flip": false,
+        "height": 0.39303571124466086,
+        "x": 0.632
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.7661365675307032,
+        "flip": true,
+        "height": 0.33537201814978546,
+        "x": 0.379
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.8805338941544076,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.371
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.864257851748596,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.333
+      }
+    ],
+    "room_with_center_astronomer_tower": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.7917132055969786,
+        "flip": false,
+        "height": 0.34048734576304057,
+        "x": 0.689
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.9628441657495119,
+        "flip": false,
+        "height": 0.4465141362923275,
+        "x": 0.73
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8479818093427844,
+        "flip": true,
+        "height": 0.3962909197258232,
+        "x": 0.151
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.7517206442569844,
+        "flip": true,
+        "height": 0.3260714224893217,
+        "x": 0.784
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8219401414934858,
+        "flip": true,
+        "height": 0.4148921110467507,
+        "x": 0.294
+      }
+    ],
+    "room_with_center_cellar_vault": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.86193270283348,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.395
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.605
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.9028553237395206,
+        "flip": false,
+        "height": 0.4804613104530203,
+        "x": 0.366
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.605
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.605
+      }
+    ],
+    "room_with_center_chapel": [
+      {
+        "character": "abbotess",
+        "feetY": 0.8070591884367438,
+        "flip": false,
+        "height": 0.3716443412255942,
+        "x": 0.689
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8549572560881322,
+        "flip": false,
+        "height": 0.3790848177539652,
+        "x": 0.734
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.8679780900127815,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.246
+      }
+    ],
+    "room_with_center_garden_courtyard": [
+      {
+        "character": "mice_children",
+        "feetY": 0.9628441657495119,
+        "flip": false,
+        "height": 0.24973959013346675,
+        "x": 0.605
+      },
+      {
+        "character": "vole_gardener",
+        "feetY": 0.8005487714744192,
+        "flip": true,
+        "height": 0.33397692880071594,
+        "x": 0.325
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.9121559193999844,
+        "flip": true,
+        "height": 0.37443451992373333,
+        "x": 0.755
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.8656529410976656,
+        "flip": true,
+        "height": 0.3460677031593188,
+        "x": 0.286
+      }
+    ],
+    "room_with_center_great_hall": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.7103329935679206,
+        "flip": false,
+        "height": 0.2525967167716579,
+        "x": 0.348
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.8703032389278974,
+        "flip": true,
+        "height": 0.5371949439818493,
+        "x": 0.333
+      },
+      {
+        "character": "mice_children",
+        "feetY": 0.8386812136823206,
+        "flip": false,
+        "height": 0.26050222308305215,
+        "x": 0.353
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.7121931127000133,
+        "flip": true,
+        "height": 0.29491442702676807,
+        "x": 0.344
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.8809989239374307,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.315
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.9121559193999844,
+        "flip": true,
+        "height": 0.39071056232954493,
+        "x": 0.675
+      },
+      {
+        "character": "shrew_musician",
+        "feetY": 0.7396298698983814,
+        "flip": false,
+        "height": 0.31258555878164923,
+        "x": 0.344
+      }
+    ],
+    "room_with_center_great_library": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.7814825503704684,
+        "flip": false,
+        "height": 0.223299840441197,
+        "x": 0.635
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.8410063625974366,
+        "flip": false,
+        "height": 0.2939843674607217,
+        "x": 0.593
+      },
+      {
+        "character": "mouse_reader",
+        "feetY": 0.8670480304467352,
+        "flip": false,
+        "height": 0.21399924478073326,
+        "x": 0.791
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.9056455024376597,
+        "flip": false,
+        "height": 0.37675966883884926,
+        "x": 0.265
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.9847005655516018,
+        "flip": false,
+        "height": 0.3232812437911826,
+        "x": 0.225
+      }
+    ],
+    "room_with_center_map_room": [
+      {
+        "character": "hare_colonel",
+        "feetY": 0.8038039799555815,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.624
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.7670666270967496,
+        "flip": true,
+        "height": 0.37024925187652463,
+        "x": 0.613
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.7954334438611641,
+        "flip": false,
+        "height": 0.3409523755460637,
+        "x": 0.631
+      }
+    ],
+    "room_with_center_music_room": [
+      {
+        "character": "shrew_musician",
+        "feetY": 0.7614862697004713,
+        "flip": false,
+        "height": 0.31863094596095065,
+        "x": 0.625
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8558873156541786,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.347
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.735909631634196,
+        "flip": false,
+        "height": 0.3311867501025768,
+        "x": 0.605
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.9028553237395206,
+        "flip": false,
+        "height": 0.36001859665001446,
+        "x": 0.183
+      }
+    ],
+    "room_with_center_right": [
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.7661365675307032,
+        "flip": true,
+        "height": 0.33537201814978546,
+        "x": 0.379
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7828776397195379,
+        "flip": false,
+        "height": 0.49115699546255365,
+        "x": 0.749
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.8805338941544076,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.371
+      },
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7870629077667467,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.736
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.864257851748596,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.333
+      },
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8926246685130105,
+        "flip": true,
+        "height": 0.3953608601597768,
+        "x": 0.339
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.9051804726546366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.333
+      }
+    ],
+    "room_with_center_right_alchemy_study": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8884394004658018,
+        "flip": false,
+        "height": 0.33769716706490144,
+        "x": 0.363
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.9079706513527758,
+        "flip": true,
+        "height": 0.3795498475369884,
+        "x": 0.648
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.9056455024376597,
+        "flip": false,
+        "height": 0.39768600907489277,
+        "x": 0.369
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.7438151379455902,
+        "flip": false,
+        "height": 0.3549032690367594,
+        "x": 0.692
+      }
+    ],
+    "room_with_center_right_armory": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8926246685130105,
+        "flip": true,
+        "height": 0.3953608601597768,
+        "x": 0.339
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.9051804726546366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.333
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7828776397195379,
+        "flip": false,
+        "height": 0.49115699546255365,
+        "x": 0.749
+      },
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7870629077667467,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.736
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.7661365675307032,
+        "flip": true,
+        "height": 0.33537201814978546,
+        "x": 0.379
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.8805338941544076,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.371
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.864257851748596,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.333
+      }
+    ],
+    "room_with_center_right_astronomer_tower": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8926246685130105,
+        "flip": true,
+        "height": 0.3953608601597768,
+        "x": 0.339
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.8805338941544076,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.264
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8847191622016163,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.241
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.7405599294644278,
+        "flip": true,
+        "height": 0.34560267337629563,
+        "x": 0.703
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.864257851748596,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.333
+      }
+    ],
+    "room_with_center_right_cellar_vault": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.7893880566818626,
+        "flip": true,
+        "height": 0.3721093710086174,
+        "x": 0.69
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.8805338941544076,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.371
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.8870443111167322,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.703
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.8400763030313901,
+        "flip": false,
+        "height": 0.3349069883667623,
+        "x": 0.659
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.817289843663254,
+        "flip": false,
+        "height": 0.35025297120652754,
+        "x": 0.681
+      }
+    ],
+    "room_with_center_right_chapel": [
+      {
+        "character": "abbotess",
+        "feetY": 0.8070591884367438,
+        "flip": false,
+        "height": 0.3716443412255942,
+        "x": 0.689
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8549572560881322,
+        "flip": false,
+        "height": 0.3790848177539652,
+        "x": 0.734
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.8679780900127815,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.246
+      }
+    ],
+    "room_with_center_right_garden_courtyard": [
+      {
+        "character": "mice_children",
+        "feetY": 0.9628441657495119,
+        "flip": false,
+        "height": 0.24973959013346675,
+        "x": 0.605
+      },
+      {
+        "character": "vole_gardener",
+        "feetY": 0.8005487714744192,
+        "flip": true,
+        "height": 0.33397692880071594,
+        "x": 0.325
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.8656529410976656,
+        "flip": true,
+        "height": 0.3460677031593188,
+        "x": 0.286
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.8693731793618511,
+        "flip": false,
+        "height": 0.3367671074988551,
+        "x": 0.2863392857142857
+      }
+    ],
+    "room_with_center_right_great_hall": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.7117280829169902,
+        "flip": true,
+        "height": 0.28235862288514196,
+        "x": 0.679
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7577660314362858,
+        "flip": false,
+        "height": 0.4483742554244203,
+        "x": 0.743
+      },
+      {
+        "character": "mice_children",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.27584820592281734,
+        "x": 0.605
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8428664817295293,
+        "flip": false,
+        "height": 0.38234002623512753,
+        "x": 0.659
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.7047526361716423,
+        "flip": true,
+        "height": 0.27445311657374777,
+        "x": 0.613
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.7521856740400076,
+        "flip": false,
+        "height": 0.2628273719981681,
+        "x": 0.718
+      },
+      {
+        "character": "shrew_musician",
+        "feetY": 0.8651879113146423,
+        "flip": false,
+        "height": 0.3962909197258232,
+        "x": 0.66
+      }
+    ],
+    "room_with_center_right_great_library": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8024088906065119,
+        "flip": true,
+        "height": 0.23120534675259122,
+        "x": 0.615
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.911225859833938,
+        "flip": false,
+        "height": 0.3637388349142,
+        "x": 0.316
+      },
+      {
+        "character": "mouse_reader",
+        "feetY": 0.8763486261071989,
+        "flip": true,
+        "height": 0.2679426996114231,
+        "x": 0.243
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.8038039799555815,
+        "flip": true,
+        "height": 0.23678570414886949,
+        "x": 0.618
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.9070405917867294,
+        "flip": true,
+        "height": 0.29258927811165214,
+        "x": 0.303
+      }
+    ],
+    "room_with_center_right_map_room": [
+      {
+        "character": "hare_colonel",
+        "feetY": 0.8038039799555815,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.624
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.7670666270967496,
+        "flip": true,
+        "height": 0.37024925187652463,
+        "x": 0.613
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.7954334438611641,
+        "flip": false,
+        "height": 0.3409523755460637,
+        "x": 0.631
+      }
+    ],
+    "room_with_center_right_music_room": [
+      {
+        "character": "shrew_musician",
+        "feetY": 0.9121559193999844,
+        "flip": false,
+        "height": 0.3958258899428,
+        "x": 0.675
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.864257851748596,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.333
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.9102958002678917,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.664
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.8856492217676627,
+        "flip": true,
+        "height": 0.3283965714044377,
+        "x": 0.652
+      }
+    ],
+    "room_with_center_right_stone_corridor": [
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7777623121062829,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.696
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8726283878430134,
+        "flip": false,
+        "height": 0.3953608601597768,
+        "x": 0.715
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.9121559193999844,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.697
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8219401414934858,
+        "flip": true,
+        "height": 0.4148921110467507,
+        "x": 0.294
+      }
+    ],
+    "room_with_center_stone_corridor": [
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7777623121062829,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.696
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8726283878430134,
+        "flip": false,
+        "height": 0.3953608601597768,
+        "x": 0.715
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.9121559193999844,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.697
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8219401414934858,
+        "flip": true,
+        "height": 0.4148921110467507,
+        "x": 0.294
+      }
+    ],
+    "room_with_left": [
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8568173752202249,
+        "flip": true,
+        "height": 0.39768600907489277,
+        "x": 0.654
+      },
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8428664817295293,
+        "flip": false,
+        "height": 0.35769344773489853,
+        "x": 0.661
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8410063625974366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.436
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      }
+    ],
+    "room_with_left_alchemy_study": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8428664817295293,
+        "flip": false,
+        "height": 0.35769344773489853,
+        "x": 0.661
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8568173752202249,
+        "flip": true,
+        "height": 0.39768600907489277,
+        "x": 0.654
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8410063625974366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.436
+      }
+    ],
+    "room_with_left_armory": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8428664817295293,
+        "flip": false,
+        "height": 0.35769344773489853,
+        "x": 0.661
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7819475801534916,
+        "flip": true,
+        "height": 0.4925520848116232,
+        "x": 0.311
+      },
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7912481758139553,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.323
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.9014602343904511,
+        "flip": false,
+        "height": 0.42372767692419133,
+        "x": 0.759
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.8958798769941728,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.511
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8410063625974366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.436
+      }
+    ],
+    "room_with_left_astronomer_tower": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8428664817295293,
+        "flip": false,
+        "height": 0.35769344773489853,
+        "x": 0.661
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8568173752202249,
+        "flip": true,
+        "height": 0.39768600907489277,
+        "x": 0.654
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.8447266008616221,
+        "flip": true,
+        "height": 0.37629463905582605,
+        "x": 0.66
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8410063625974366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.436
+      }
+    ],
+    "room_with_left_cellar_vault": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.86193270283348,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.472
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.9028553237395206,
+        "flip": false,
+        "height": 0.4804613104530203,
+        "x": 0.366
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.38885044319745216,
+        "x": 0.5
+      }
+    ],
+    "room_with_left_center": [],
+    "room_with_left_center_alchemy_study": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8428664817295293,
+        "flip": false,
+        "height": 0.35769344773489853,
+        "x": 0.661
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.605
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8568173752202249,
+        "flip": true,
+        "height": 0.39768600907489277,
+        "x": 0.654
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8410063625974366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.395
+      }
+    ],
+    "room_with_left_center_armory": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8730934176260365,
+        "flip": false,
+        "height": 0.3874553538483826,
+        "x": 0.666
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.9089007109188221,
+        "flip": false,
+        "height": 0.42977306410349275,
+        "x": 0.394
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.8428664817295293,
+        "flip": false,
+        "height": 0.5251041696232465,
+        "x": 0.847
+      },
+      {
+        "character": "hare_sentry",
+        "feetY": 0.903785383305567,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.856
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8782087452392917,
+        "flip": true,
+        "height": 0.40977678343349566,
+        "x": 0.06
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.8349609754181351,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.813
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.7084728744358278,
+        "flip": true,
+        "height": 0.36001859665001446,
+        "x": 0.307
+      }
+    ],
+    "room_with_left_center_astronomer_tower": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.7917132055969786,
+        "flip": false,
+        "height": 0.34048734576304057,
+        "x": 0.689
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.9628441657495119,
+        "flip": false,
+        "height": 0.4465141362923275,
+        "x": 0.73
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8210100819274394,
+        "flip": true,
+        "height": 0.3962909197258232,
+        "x": 0.3371577380952382
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.7517206442569844,
+        "flip": true,
+        "height": 0.3260714224893217,
+        "x": 0.784
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8219401414934858,
+        "flip": true,
+        "height": 0.4148921110467507,
+        "x": 0.294
+      }
+    ],
+    "room_with_left_center_cellar_vault": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.8275204988897641,
+        "flip": false,
+        "height": 0.3549032690367594,
+        "x": 0.329
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.9019252641734743,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.685
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.9023902939564975,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.313
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.7991536821253495,
+        "flip": true,
+        "height": 0.3149107076967652,
+        "x": 0.339
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.8549572560881322,
+        "flip": false,
+        "height": 0.3739694901407101,
+        "x": 0.683
+      }
+    ],
+    "room_with_left_center_chapel": [
+      {
+        "character": "abbotess",
+        "feetY": 0.8600725837013873,
+        "flip": false,
+        "height": 0.38931547298047536,
+        "x": 0.743
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8623977326165032,
+        "flip": false,
+        "height": 0.4148921110467507,
+        "x": 0.751
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.8777437154562685,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.766
+      }
+    ],
+    "room_with_left_center_garden_courtyard": [
+      {
+        "character": "mice_children",
+        "feetY": 0.9628441657495119,
+        "flip": false,
+        "height": 0.24973959013346675,
+        "x": 0.605
+      },
+      {
+        "character": "vole_gardener",
+        "feetY": 0.8005487714744192,
+        "flip": true,
+        "height": 0.33397692880071594,
+        "x": 0.325
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.8656529410976656,
+        "flip": true,
+        "height": 0.3460677031593188,
+        "x": 0.286
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.8796038345883612,
+        "flip": false,
+        "height": 0.37443451992373333,
+        "x": 0.27211309523809524
+      }
+    ],
+    "room_with_left_center_great_hall": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.7103329935679206,
+        "flip": false,
+        "height": 0.2525967167716579,
+        "x": 0.348
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.8703032389278974,
+        "flip": true,
+        "height": 0.5371949439818493,
+        "x": 0.333
+      },
+      {
+        "character": "mice_children",
+        "feetY": 0.8386812136823206,
+        "flip": false,
+        "height": 0.26050222308305215,
+        "x": 0.353
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.7121931127000133,
+        "flip": true,
+        "height": 0.29491442702676807,
+        "x": 0.344
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.8809989239374307,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.315
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.9121559193999844,
+        "flip": true,
+        "height": 0.39071056232954493,
+        "x": 0.675
+      },
+      {
+        "character": "shrew_musician",
+        "feetY": 0.6024460839065409,
+        "flip": false,
+        "height": 0.2205096617430579,
+        "x": 0.364
+      }
+    ],
+    "room_with_left_center_great_library": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8637928219655728,
+        "flip": true,
+        "height": 0.2707328783095623,
+        "x": 0.666
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.7865978779837235,
+        "flip": false,
+        "height": 0.2033035597711999,
+        "x": 0.334
+      },
+      {
+        "character": "mouse_reader",
+        "feetY": 0.8884394004658018,
+        "flip": true,
+        "height": 0.23167037653561443,
+        "x": 0.06
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.8312407371539496,
+        "flip": false,
+        "height": 0.27724329527188685,
+        "x": 0.318
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.7958984736441873,
+        "flip": false,
+        "height": 0.16145087929911295,
+        "x": 0.316
+      }
+    ],
+    "room_with_left_center_map_room": [
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7931082949460482,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.739
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.7763672227572134,
+        "flip": true,
+        "height": 0.37024925187652463,
+        "x": 0.744
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.8079892480027902,
+        "flip": false,
+        "height": 0.3409523755460637,
+        "x": 0.745
+      }
+    ],
+    "room_with_left_center_music_room": [
+      {
+        "character": "shrew_musician",
+        "feetY": 0.6740606704921118,
+        "flip": true,
+        "height": 0.289799099413513,
+        "x": 0.312
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8428664817295293,
+        "flip": false,
+        "height": 0.43442336193372466,
+        "x": 0.728
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.6735956407090887,
+        "flip": true,
+        "height": 0.30840029073444053,
+        "x": 0.306
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.8954148472111496,
+        "flip": true,
+        "height": 0.3721093710086174,
+        "x": 0.812
+      }
+    ],
+    "room_with_left_center_right_alchemy_study": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8884394004658018,
+        "flip": false,
+        "height": 0.33769716706490144,
+        "x": 0.363
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.9079706513527758,
+        "flip": true,
+        "height": 0.3795498475369884,
+        "x": 0.648
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.9056455024376597,
+        "flip": false,
+        "height": 0.39768600907489277,
+        "x": 0.369
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.7438151379455902,
+        "flip": false,
+        "height": 0.3549032690367594,
+        "x": 0.692
+      }
+    ],
+    "room_with_left_center_right_armory": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.7968285332102336,
+        "flip": false,
+        "height": 0.2986346652909536,
+        "x": 0.334
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.8405413328144133,
+        "flip": false,
+        "height": 0.3558333286028058,
+        "x": 0.331
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.8075242182197669,
+        "flip": false,
+        "height": 0.44325892781116527,
+        "x": 0.686
+      },
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7991536821253495,
+        "flip": true,
+        "height": 0.37629463905582605,
+        "x": 0.35
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.7828776397195379,
+        "flip": false,
+        "height": 0.28282365266816517,
+        "x": 0.68
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.8140346351820916,
+        "flip": false,
+        "height": 0.37629463905582605,
+        "x": 0.684
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8103143969179061,
+        "flip": false,
+        "height": 0.3693191923104783,
+        "x": 0.712
+      }
+    ],
+    "room_with_left_center_right_astronomer_tower": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8926246685130105,
+        "flip": true,
+        "height": 0.3953608601597768,
+        "x": 0.339
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.8926246685130105,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.3960684523809524
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.888904430248825,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.6697619047619048
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.7405599294644278,
+        "flip": true,
+        "height": 0.34560267337629563,
+        "x": 0.703
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.864257851748596,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.333
+      }
+    ],
+    "room_with_left_center_right_cellar_vault": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.8275204988897641,
+        "flip": false,
+        "height": 0.3549032690367594,
+        "x": 0.329
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.9019252641734743,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.685
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.9023902939564975,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.313
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.7991536821253495,
+        "flip": true,
+        "height": 0.3149107076967652,
+        "x": 0.339
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.8549572560881322,
+        "flip": false,
+        "height": 0.3739694901407101,
+        "x": 0.683
+      }
+    ],
+    "room_with_left_center_right_chapel": [
+      {
+        "character": "abbotess",
+        "feetY": 0.8600725837013873,
+        "flip": false,
+        "height": 0.38931547298047536,
+        "x": 0.743
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8623977326165032,
+        "flip": false,
+        "height": 0.4148921110467507,
+        "x": 0.735
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.8777437154562685,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.735
+      }
+    ],
+    "room_with_left_center_right_garden_courtyard": [
+      {
+        "character": "mice_children",
+        "feetY": 0.800083741691396,
+        "flip": false,
+        "height": 0.168891355827484,
+        "x": 0.7415952380952381
+      },
+      {
+        "character": "vole_gardener",
+        "feetY": 0.9121559193999844,
+        "flip": false,
+        "height": 0.37722469862187247,
+        "x": 0.395
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.911225859833938,
+        "flip": false,
+        "height": 0.34141740532908693,
+        "x": 0.395
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.6987072489923408,
+        "flip": false,
+        "height": 0.17354165365771584,
+        "x": 0.6352797619047619
+      }
+    ],
+    "room_with_left_center_right_great_hall": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.7117280829169902,
+        "flip": true,
+        "height": 0.28235862288514196,
+        "x": 0.679
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7577660314362858,
+        "flip": false,
+        "height": 0.4483742554244203,
+        "x": 0.743
+      },
+      {
+        "character": "mice_children",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.27584820592281734,
+        "x": 0.605
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8428664817295293,
+        "flip": false,
+        "height": 0.38234002623512753,
+        "x": 0.659
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.7047526361716423,
+        "flip": true,
+        "height": 0.27445311657374777,
+        "x": 0.613
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.7521856740400076,
+        "flip": false,
+        "height": 0.2628273719981681,
+        "x": 0.718
+      },
+      {
+        "character": "shrew_musician",
+        "feetY": 0.8651879113146423,
+        "flip": false,
+        "height": 0.3962909197258232,
+        "x": 0.66
+      }
+    ],
+    "room_with_left_center_right_great_library": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8024088906065119,
+        "flip": true,
+        "height": 0.23120534675259122,
+        "x": 0.615
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.911225859833938,
+        "flip": false,
+        "height": 0.3637388349142,
+        "x": 0.316
+      },
+      {
+        "character": "mouse_reader",
+        "feetY": 0.9121559193999844,
+        "flip": true,
+        "height": 0.2679426996114231,
+        "x": 0.08903273809523811
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.7968285332102336,
+        "flip": true,
+        "height": 0.23678570414886949,
+        "x": 0.6998452380952381
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.8214751117104626,
+        "flip": true,
+        "height": 0.20144344063910719,
+        "x": 0.6660952380952381
+      }
+    ],
+    "room_with_left_center_right_map_room": [
+      {
+        "character": "hare_colonel",
+        "feetY": 0.9121559193999844,
+        "flip": true,
+        "height": 0.5571912246518465,
+        "x": 0.341
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.824730320191625,
+        "flip": false,
+        "height": 0.3795498475369884,
+        "x": 0.334
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.9121559193999844,
+        "flip": false,
+        "height": 0.38885044319745216,
+        "x": 0.677
+      }
+    ],
+    "room_with_left_center_right_music_room": [
+      {
+        "character": "shrew_musician",
+        "feetY": 0.9121559193999844,
+        "flip": false,
+        "height": 0.3958258899428,
+        "x": 0.675
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.864257851748596,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.333
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.9102958002678917,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.664
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.8856492217676627,
+        "flip": true,
+        "height": 0.3283965714044377,
+        "x": 0.652
+      }
+    ],
+    "room_with_left_center_right_stone_corridor": [
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7777623121062829,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.696
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8726283878430134,
+        "flip": false,
+        "height": 0.3953608601597768,
+        "x": 0.715
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.9121559193999844,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.697
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8219401414934858,
+        "flip": true,
+        "height": 0.4148921110467507,
+        "x": 0.294
+      }
+    ],
+    "room_with_left_center_stone_corridor": [
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7652065079646568,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.352
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8726283878430134,
+        "flip": false,
+        "height": 0.3953608601597768,
+        "x": 0.715
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.9121559193999844,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.645
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8219401414934858,
+        "flip": true,
+        "height": 0.4148921110467507,
+        "x": 0.294
+      }
+    ],
+    "room_with_left_chapel": [
+      {
+        "character": "abbotess",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.38047990710303475,
+        "x": 0.5
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.3967559495088464,
+        "x": 0.5
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.8424014519465062,
+        "flip": false,
+        "height": 0.4288430045374464,
+        "x": 0.705
+      }
+    ],
+    "room_with_left_garden_courtyard": [
+      {
+        "character": "mice_children",
+        "feetY": 0.8647228815316191,
+        "flip": false,
+        "height": 0.27631323570584054,
+        "x": 0.37
+      },
+      {
+        "character": "vole_gardener",
+        "feetY": 0.7652065079646568,
+        "flip": true,
+        "height": 0.2730580272246782,
+        "x": 0.586
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.7638114186155872,
+        "flip": true,
+        "height": 0.20051338107306077,
+        "x": 0.5842232142857143
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.7861328482007003,
+        "flip": false,
+        "height": 0.20841888738445502,
+        "x": 0.42577083333333327
+      }
+    ],
+    "room_with_left_great_hall": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.7103329935679206,
+        "flip": false,
+        "height": 0.2525967167716579,
+        "x": 0.348
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.8703032389278974,
+        "flip": true,
+        "height": 0.5371949439818493,
+        "x": 0.333
+      },
+      {
+        "character": "mice_children",
+        "feetY": 0.8386812136823206,
+        "flip": false,
+        "height": 0.26050222308305215,
+        "x": 0.353
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.7121931127000133,
+        "flip": true,
+        "height": 0.29491442702676807,
+        "x": 0.344
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.8809989239374307,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.315
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.9121559193999844,
+        "flip": true,
+        "height": 0.39071056232954493,
+        "x": 0.675
+      },
+      {
+        "character": "shrew_musician",
+        "feetY": 0.6024460839065409,
+        "flip": false,
+        "height": 0.2205096617430579,
+        "x": 0.364
+      }
+    ],
+    "room_with_left_great_library": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.7814825503704684,
+        "flip": false,
+        "height": 0.223299840441197,
+        "x": 0.635
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.9121559193999844,
+        "flip": false,
+        "height": 0.2939843674607217,
+        "x": 0.744
+      },
+      {
+        "character": "mouse_reader",
+        "feetY": 0.8670480304467352,
+        "flip": false,
+        "height": 0.21399924478073326,
+        "x": 0.791
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.9056455024376597,
+        "flip": false,
+        "height": 0.37675966883884926,
+        "x": 0.265
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.9847005655516018,
+        "flip": false,
+        "height": 0.3232812437911826,
+        "x": 0.265
+      }
+    ],
+    "room_with_left_map_room": [
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7386998103323351,
+        "flip": true,
+        "height": 0.4028013366881478,
+        "x": 0.6
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.7340495125021032,
+        "flip": true,
+        "height": 0.34420758402722607,
+        "x": 0.601
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.7200986190114075,
+        "flip": false,
+        "height": 0.3018898737721159,
+        "x": 0.595
+      }
+    ],
+    "room_with_left_music_room": [
+      {
+        "character": "shrew_musician",
+        "feetY": 0.7614862697004713,
+        "flip": false,
+        "height": 0.31863094596095065,
+        "x": 0.625
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8558873156541786,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.347
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.735909631634196,
+        "flip": false,
+        "height": 0.3311867501025768,
+        "x": 0.504
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.9028553237395206,
+        "flip": false,
+        "height": 0.36001859665001446,
+        "x": 0.265
+      }
+    ],
+    "room_with_left_right_alchemy_study": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8428664817295293,
+        "flip": false,
+        "height": 0.35769344773489853,
+        "x": 0.661
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8568173752202249,
+        "flip": true,
+        "height": 0.39768600907489277,
+        "x": 0.654
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8410063625974366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.436
+      }
+    ],
+    "room_with_left_right_armory": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8428664817295293,
+        "flip": false,
+        "height": 0.35769344773489853,
+        "x": 0.661
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7819475801534916,
+        "flip": true,
+        "height": 0.4925520848116232,
+        "x": 0.311
+      },
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7912481758139553,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.323
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.9014602343904511,
+        "flip": false,
+        "height": 0.42372767692419133,
+        "x": 0.735
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.8958798769941728,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.511
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8410063625974366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.436
+      }
+    ],
+    "room_with_left_right_astronomer_tower": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8428664817295293,
+        "flip": false,
+        "height": 0.35769344773489853,
+        "x": 0.661
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8568173752202249,
+        "flip": true,
+        "height": 0.39768600907489277,
+        "x": 0.654
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.8447266008616221,
+        "flip": true,
+        "height": 0.37629463905582605,
+        "x": 0.66
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8410063625974366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.436
+      }
+    ],
+    "room_with_left_right_cellar_vault": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.7531157336060539,
+        "flip": false,
+        "height": 0.35025297120652754,
+        "x": 0.657
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.8256603797576714,
+        "flip": true,
+        "height": 0.41814731952791306,
+        "x": 0.305
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.7865978779837235,
+        "flip": false,
+        "height": 0.3121205289986261,
+        "x": 0.674
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.3460677031593188,
+        "x": 0.5
+      }
+    ],
+    "room_with_left_right_chapel": [
+      {
+        "character": "abbotess",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.38047990710303475,
+        "x": 0.5
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.3967559495088464,
+        "x": 0.5
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.8424014519465062,
+        "flip": false,
+        "height": 0.4288430045374464,
+        "x": 0.705
+      }
+    ],
+    "room_with_left_right_garden_courtyard": [
+      {
+        "character": "mice_children",
+        "feetY": 0.7368396912002423,
+        "flip": false,
+        "height": 0.168891355827484,
+        "x": 0.691
+      },
+      {
+        "character": "vole_gardener",
+        "feetY": 0.9121559193999844,
+        "flip": false,
+        "height": 0.37722469862187247,
+        "x": 0.476
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.911225859833938,
+        "flip": false,
+        "height": 0.34141740532908693,
+        "x": 0.479
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.6787109683223438,
+        "flip": false,
+        "height": 0.17354165365771584,
+        "x": 0.264
+      }
+    ],
+    "room_with_left_right_great_hall": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7470703464267525,
+        "flip": false,
+        "height": 0.3986160686409391,
+        "x": 0.392
+      },
+      {
+        "character": "mice_children",
+        "feetY": 0.8447266008616221,
+        "flip": true,
+        "height": 0.250271567856542,
+        "x": 0.357
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.7414899890304743,
+        "flip": false,
+        "height": 0.272592997441655,
+        "x": 0.379
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.7521856740400076,
+        "flip": true,
+        "height": 0.33630207771583187,
+        "x": 0.598
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.7935733247290714,
+        "flip": true,
+        "height": 0.3344419585837391,
+        "x": 0.58
+      },
+      {
+        "character": "shrew_musician",
+        "feetY": 0.7396298698983814,
+        "flip": true,
+        "height": 0.27863838462095647,
+        "x": 0.401
+      }
+    ],
+    "room_with_left_right_great_library": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.7726469844930278,
+        "flip": true,
+        "height": 0.1716815345256231,
+        "x": 0.685
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.7777623121062829,
+        "flip": false,
+        "height": 0.21353421499771005,
+        "x": 0.369
+      },
+      {
+        "character": "mouse_reader",
+        "feetY": 0.7670666270967496,
+        "flip": false,
+        "height": 0.13075891361958247,
+        "x": 0.711
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.8521670773899931,
+        "flip": false,
+        "height": 0.321886154442113,
+        "x": 0.483
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.7796224312383757,
+        "flip": false,
+        "height": 0.1623809388651593,
+        "x": 0.337
+      }
+    ],
+    "room_with_left_right_map_room": [
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7386998103323351,
+        "flip": true,
+        "height": 0.4028013366881478,
+        "x": 0.6
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.7340495125021032,
+        "flip": true,
+        "height": 0.34420758402722607,
+        "x": 0.601
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.7298642444548945,
+        "flip": false,
+        "height": 0.3018898737721159,
+        "x": 0.611
+      }
+    ],
+    "room_with_left_right_music_room": [
+      {
+        "character": "shrew_musician",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.3651339242632695,
+        "x": 0.5
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.6949870107281554,
+        "flip": false,
+        "height": 0.2358556445828231,
+        "x": 0.353
+      }
+    ],
+    "room_with_left_right_stone_corridor": [
+      {
+        "character": "hare_sentry",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.38234002623512753,
+        "x": 0.5
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.8670480304467352,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.686
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8410063625974366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.436
+      }
+    ],
+    "room_with_left_stone_corridor": [
+      {
+        "character": "hare_sentry",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.38234002623512753,
+        "x": 0.5
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.8670480304467352,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.686
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8410063625974366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.436
+      }
+    ],
+    "room_with_right_alchemy_study": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8293806180218568,
+        "flip": false,
+        "height": 0.36838913274443186,
+        "x": 0.651
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8928261889878314,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.221
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8558873156541786,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.347
+      }
+    ],
+    "room_with_right_armory": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8926246685130105,
+        "flip": true,
+        "height": 0.3953608601597768,
+        "x": 0.339
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.9051804726546366,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.333
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7828776397195379,
+        "flip": false,
+        "height": 0.49115699546255365,
+        "x": 0.749
+      },
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7870629077667467,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.736
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.7661365675307032,
+        "flip": true,
+        "height": 0.33537201814978546,
+        "x": 0.379
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.8805338941544076,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.371
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.864257851748596,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.333
+      }
+    ],
+    "room_with_right_astronomer_tower": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.8293806180218568,
+        "flip": false,
+        "height": 0.3530431499046667,
+        "x": 0.651
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "mouse_alchemist",
+        "feetY": 0.8928261889878314,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.221
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.7382347805493119,
+        "flip": false,
+        "height": 0.36792410296140865,
+        "x": 0.401
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8558873156541786,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.347
+      }
+    ],
+    "room_with_right_cellar_vault": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.86193270283348,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.472
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.9028553237395206,
+        "flip": false,
+        "height": 0.4804613104530203,
+        "x": 0.366
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.46,
+        "x": 0.5
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.36792410296140865,
+        "x": 0.5
+      }
+    ],
+    "room_with_right_chapel": [
+      {
+        "character": "abbotess",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.3493229116404811,
+        "x": 0.5
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.88,
+        "flip": true,
+        "height": 0.3753645794897797,
+        "x": 0.5
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.88,
+        "flip": false,
+        "height": 0.4330282725846551,
+        "x": 0.5
+      }
+    ],
+    "room_with_right_garden_courtyard": [
+      {
+        "character": "mice_children",
+        "feetY": 0.7573010016532626,
+        "flip": false,
+        "height": 0.16610117712934486,
+        "x": 0.7
+      },
+      {
+        "character": "vole_gardener",
+        "feetY": 0.8893694600318481,
+        "flip": true,
+        "height": 0.31956100552699707,
+        "x": 0.559
+      },
+      {
+        "character": "squirrel_forager",
+        "feetY": 0.7503255549079147,
+        "flip": true,
+        "height": 0.20051338107306077,
+        "x": 0.32641071428571433
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.9121559193999844,
+        "flip": true,
+        "height": 0.3283965714044377,
+        "x": 0.5054613095238095
+      }
+    ],
+    "room_with_right_great_hall": [
+      {
+        "character": "friends_chatting",
+        "feetY": 0.8679780900127815,
+        "flip": false,
+        "height": 0.34141740532908693,
+        "x": 0.577
+      },
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7628813590495409,
+        "flip": false,
+        "height": 0.4041964260372174,
+        "x": 0.735
+      },
+      {
+        "character": "mice_children",
+        "feetY": 0.7368396912002423,
+        "flip": false,
+        "height": 0.14889507515748684,
+        "x": 0.543
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.8977399961262655,
+        "flip": false,
+        "height": 0.3386272266309478,
+        "x": 0.407
+      },
+      {
+        "character": "otter_cook",
+        "feetY": 0.8861142515506859,
+        "flip": false,
+        "height": 0.36187871578210723,
+        "x": 0.467
+      },
+      {
+        "character": "porcupine_feasting",
+        "feetY": 0.8326358265030191,
+        "flip": false,
+        "height": 0.3051450822532782,
+        "x": 0.51
+      },
+      {
+        "character": "shrew_musician",
+        "feetY": 0.7191685594453612,
+        "flip": false,
+        "height": 0.2484114487244492,
+        "x": 0.689
+      }
+    ],
+    "room_with_right_great_library": [
+      {
+        "character": "elder_mouse",
+        "feetY": 0.7814825503704684,
+        "flip": false,
+        "height": 0.223299840441197,
+        "x": 0.635
+      },
+      {
+        "character": "friends_chatting",
+        "feetY": 0.8410063625974366,
+        "flip": false,
+        "height": 0.2939843674607217,
+        "x": 0.593
+      },
+      {
+        "character": "mouse_reader",
+        "feetY": 0.8670480304467352,
+        "flip": false,
+        "height": 0.21399924478073326,
+        "x": 0.735
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.9056455024376597,
+        "flip": false,
+        "height": 0.37675966883884926,
+        "x": 0.265
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.9847005655516018,
+        "flip": false,
+        "height": 0.3232812437911826,
+        "x": 0.225
+      }
+    ],
+    "room_with_right_map_room": [
+      {
+        "character": "hare_colonel",
+        "feetY": 0.7703218355779119,
+        "flip": false,
+        "height": 0.4083816940844261,
+        "x": 0.467
+      },
+      {
+        "character": "porcupine_scribe",
+        "feetY": 0.7642764483986104,
+        "flip": false,
+        "height": 0.3651339242632695,
+        "x": 0.466
+      },
+      {
+        "character": "shrew_stargazer",
+        "feetY": 0.8303106775879032,
+        "flip": true,
+        "height": 0.3739694901407101,
+        "x": 0.339
+      }
+    ],
+    "room_with_right_music_room": [
+      {
+        "character": "shrew_musician",
+        "feetY": 0.7614862697004713,
+        "flip": false,
+        "height": 0.31863094596095065,
+        "x": 0.625
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.8558873156541786,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.347
+      },
+      {
+        "character": "squirrel_singer",
+        "feetY": 0.735909631634196,
+        "flip": false,
+        "height": 0.3311867501025768,
+        "x": 0.504
+      },
+      {
+        "character": "vole_napping",
+        "feetY": 0.9028553237395206,
+        "flip": false,
+        "height": 0.36001859665001446,
+        "x": 0.183
+      }
+    ],
+    "room_with_right_stone_corridor": [
+      {
+        "character": "hare_sentry",
+        "feetY": 0.7466053166437293,
+        "flip": true,
+        "height": 0.3721093710086174,
+        "x": 0.369
+      },
+      {
+        "character": "mouse_warrior",
+        "feetY": 0.7349795720681496,
+        "flip": false,
+        "height": 0.36094865621606087,
+        "x": 0.518
+      },
+      {
+        "character": "otter_carpenter",
+        "feetY": 0.8916946089469642,
+        "flip": true,
+        "height": 0.46,
+        "x": 0.291
+      },
+      {
+        "character": "squirrel_maid",
+        "feetY": 0.7945033842951177,
+        "flip": false,
+        "height": 0.37675966883884926,
+        "x": 0.675
+      }
+    ]
+  }
+}
