@@ -15,11 +15,44 @@ const placements = JSON.parse(
   readFileSync(join(root, 'src/assets/data/character_placements.json'), 'utf-8'),
 )
 
-// Extract character ids from the actual structure
+// Validate structure: placements.placements must exist and be an object
+if (!placements.placements || typeof placements.placements !== 'object') {
+  console.error('ERROR: placements.placements must be a non-null object')
+  process.exit(1)
+}
+
 const ids = new Set()
-for (const entries of Object.values(placements.placements ?? {})) {
-  for (const entry of entries) {
-    if (entry && typeof entry.character === 'string') ids.add(entry.character)
+let backdropCount = 0
+let entryCount = 0
+const missing = []
+
+for (const [backdropKey, entries] of Object.entries(placements.placements)) {
+  backdropCount++
+
+  // Validate each backdrop value is an array
+  if (!Array.isArray(entries)) {
+    console.error(`ERROR: backdrop "${backdropKey}" must be an array, got ${typeof entries}`)
+    process.exit(1)
+  }
+
+  // Validate each entry
+  for (let i = 0; i < entries.length; i++) {
+    const entry = entries[i]
+    entryCount++
+
+    // Entry must be a non-null object with a string character field
+    if (!entry || typeof entry !== 'object') {
+      const type = entry === null ? 'null' : typeof entry
+      console.error(`ERROR: backdrop "${backdropKey}" entry ${i} must be a non-null object, got ${type}`)
+      process.exit(1)
+    }
+
+    if (typeof entry.character !== 'string') {
+      console.error(`ERROR: backdrop "${backdropKey}" entry ${i} must have a string "character" field, got ${typeof entry.character}`)
+      process.exit(1)
+    }
+
+    ids.add(entry.character)
   }
 }
 
@@ -31,7 +64,6 @@ if (ids.size === 0) {
 }
 
 // Check each character id with the char_ prefix
-const missing = []
 for (const id of ids) {
   const name = `char_${id}`
   if (!drawables.has(name)) {
@@ -44,4 +76,5 @@ if (missing.length > 0) {
   for (const m of missing) console.error(`  ${m}`)
   process.exit(1)
 }
-console.log(`OK: ${drawables.size} drawables; all ${ids.size} referenced character ids resolve.`)
+
+console.log(`OK: ${drawables.size} drawables; ${backdropCount} backdrops, ${entryCount} entries, all ${ids.size} referenced character ids resolve.`)
