@@ -189,6 +189,24 @@ export const runAction = (action: PlayerAction, ctx: ActionContext): ActionResul
 }
 
 /**
+ * Turns whatever `startGame`/`resumeGame` rejected with into the message shown in the error
+ * banner.
+ *
+ * Split out as a pure function so the wording is testable without a hook or a DOM: the audience
+ * is a child or a non-technical parent looking at `custom_questions.json` for the first time, not
+ * a developer, so the message leads with the two things they can actually do (fix it in Questions,
+ * or delete the file) and only then includes the raw error — which is still worth keeping, since
+ * `TriviaRepository`'s validation errors name the offending field and value directly.
+ */
+export const startErrorMessage = (e: unknown): string => {
+  const detail = e instanceof Error ? e.message : String(e)
+  return (
+    `Couldn't start the game: one of your custom questions is invalid (${detail}). ` +
+    'Open Questions to fix it, or delete custom_questions.json to start fresh.'
+  )
+}
+
+/**
  * Stamps the hook-tracked `entryDirection` onto the reduced state.
  *
  * `reduce` builds `InGame`/`Trivia` with no knowledge of `entryDirection` — it is tracked here,
@@ -211,6 +229,11 @@ export interface Game {
   readonly openQuestions: () => void
   readonly saveQuestion: (entry: QuestionBank.Entry) => void
   readonly deleteQuestion: (id: string) => void
+  /** Set when `startGame`/`resumeGame` rejects — see {@link startErrorMessage}. Rendered through
+   *  the same `.load-error` banner as an asset load failure, since both are "the app kept running
+   *  but something the player would want to know about happened before the screen could change". */
+  readonly startError: string | null
+  readonly dismissStartError: () => void
 }
 
 /**
@@ -265,6 +288,10 @@ export const useGame = (bridge: MindMazeBridge): Game => {
     hasSavedGame: false,
   })
 
+  /** See {@link Game.startError}. */
+  const [startError, setStartError] = useState<string | null>(null)
+  const dismissStartError = useCallback((): void => setStartError(null), [])
+
   /** `uiState` as the callbacks below need it, without making every one of them re-create on
    *  each render — the keyboard handler is registered against these and would otherwise be
    *  torn down and re-added every frame. */
@@ -308,15 +335,20 @@ export const useGame = (bridge: MindMazeBridge): Game => {
    */
   const persist = useCallback(
     (state: GameState): void => {
+      // Fire-and-forget, same as Kotlin: it never awaited its SharedPreferences/file writes
+      // either. Gameplay lives entirely in memory (engineRef/uiState), so a write failing here —
+      // a read-only profile, a full disk — cannot desync what the player sees; it only means the
+      // *next* launch won't find a save. Not worth surfacing to the player or blocking on, but a
+      // rejection must still be caught so it isn't unhandled.
       if (state.isComplete) {
         // A finished game must not be offered as "Resume" — the menu would invite the player
         // back into a maze they have already won.
-        void gameStateStore.clearActive()
-        void gameStateStore.clearSaved()
+        void gameStateStore.clearActive().catch(() => {})
+        void gameStateStore.clearSaved().catch(() => {})
       } else {
         const game = { state, entryDirection: entryDirectionRef.current }
-        void gameStateStore.saveActive(game)
-        void gameStateStore.saveCrossSession(game)
+        void gameStateStore.saveActive(game).catch(() => {})
+        void gameStateStore.saveCrossSession(game).catch(() => {})
       }
     },
     [gameStateStore],
@@ -369,6 +401,10 @@ export const useGame = (bridge: MindMazeBridge): Game => {
   const startGame = useCallback(
     (settings: GameSettings): void => {
       void (async () => {
+        // A fresh start clears any prior error banner: reaching this point again means the
+        // player is trying again, and a stale message from a previous failed attempt must not
+        // linger once a new one is underway.
+        setStartError(null)
         await settingsStore.save(settings)
         const maze = generate(settings.complexity)
         const state: GameState = {
@@ -387,22 +423,40 @@ export const useGame = (bridge: MindMazeBridge): Game => {
         await gameStateStore.clearActive()
         await gameStateStore.clearSaved()
         await launchEngine(state, null)
-      })()
+      })().catch((e: unknown) => {
+        // launchEngine builds a TriviaRepository from the merged question pool, and that
+        // constructor throws on a semantically-invalid entry (an unknown topic/difficulty, a
+        // correctIndex out of range) — deliberately, so a bad custom question can't silently make
+        // every door unanswerable. Uncaught, that throw happened before setUiState ever ran, so
+        // the menu just sat there: Start Game did nothing, with the only explanation in a DevTools
+        // console a family member would never open. Catching it and routing to startError is what
+        // turns "fails loud" into "fails visibly".
+        setStartError(startErrorMessage(e))
+      })
     },
     [settingsStore, gameStateStore, launchEngine],
   )
 
   const resumeGame = useCallback((): void => {
     void (async () => {
+      setStartError(null)
       const saved = (await gameStateStore.loadActive()) ?? (await gameStateStore.loadCrossSession())
       if (saved === null) return
       await launchEngine(saved.state, saved.entryDirection)
-    })()
+    })().catch((e: unknown) => {
+      // Same failure mode as startGame: a saved game whose settings now draw an invalid custom
+      // question (e.g. edited by hand between sessions) would otherwise leave Resume as silent a
+      // dead end as Start Game was.
+      setStartError(startErrorMessage(e))
+    })
   }, [gameStateStore, launchEngine])
 
   const updateSettings = useCallback(
     (settings: GameSettings): void => {
-      void settingsStore.save(settings)
+      // Fire-and-forget, same reasoning as persist(): the menu's in-memory `settings` is updated
+      // synchronously below regardless of whether the write lands, so a failed save cannot desync
+      // what the player sees — only the next launch's defaults.
+      void settingsStore.save(settings).catch(() => {})
       const current = uiStateRef.current
       if (current.type === 'Menu') setUiState({ ...current, settings })
     },
@@ -536,5 +590,7 @@ export const useGame = (bridge: MindMazeBridge): Game => {
     openQuestions,
     saveQuestion,
     deleteQuestion,
+    startError,
+    dismissStartError,
   }
 }

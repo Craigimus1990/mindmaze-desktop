@@ -7,9 +7,12 @@ import {
   isConfirmedMove,
   movedDirectionFor,
   runAction,
+  startErrorMessage,
   withEntryDirection,
   type ActionContext,
 } from '@/react/useGame'
+import { QuestionBank } from '@/persistence/QuestionBank'
+import { TriviaRepository } from '@/engine/engine/TriviaRepository'
 
 /**
  * Covers the reducer-facing logic `useGame` extracts from the hook body.
@@ -328,6 +331,45 @@ describe('runAction', () => {
     const e = new FakeEngine()
     expect(runAction({ type: 'UseHint' }, ctx(e, { windlassPending: true })).windlassPending)
       .toBe(true)
+  })
+})
+
+describe('startErrorMessage', () => {
+  // This is the seam for the finding this file exists to close: QuestionBank.isEntry checks
+  // shapes (typeof topic === 'string') while TriviaRepository's validateQuestion checks values
+  // (a known topic/difficulty), so an entry like {topic: "DINOSAURS"} sails through
+  // QuestionBank.merge and only fails once TriviaRepository's constructor runs inside
+  // launchEngine. Exercising that real disagreement here — rather than a synthetic Error — is
+  // what proves the message a player sees actually names the bad field, not just that some
+  // string reaches the banner.
+  it('surfaces the underlying validation error, not a silent failure, for a semantically-invalid custom question', () => {
+    const bundled = QuestionBank.toJson([
+      { id: 'b1', topic: 'MATH', difficulty: 'KINDERGARTEN', question: 'q', answers: ['a', 'b', 'c', 'd'], correctIndex: 0 },
+    ])
+    // Shape-valid (every field is the right JS type) so QuestionBank.isEntry accepts it and
+    // merge() keeps it in the pool — the disagreement is entirely about the topic *value*.
+    const custom = QuestionBank.toJson([
+      { id: 'bad', topic: 'DINOSAURS', difficulty: 'KINDERGARTEN', question: 'q?', answers: ['a', 'b', 'c', 'd'], correctIndex: 0 },
+    ])
+    const merged = QuestionBank.merge(bundled, custom, new Set())
+
+    let caught: unknown
+    try {
+      new TriviaRepository(merged, new Set(['MATH']), 'KINDERGARTEN')
+    } catch (e) {
+      caught = e
+    }
+
+    expect(caught).toBeInstanceOf(Error)
+    const message = startErrorMessage(caught)
+    expect(message).toContain("Couldn't start the game")
+    expect(message).toContain('DINOSAURS')
+    expect(message).toContain('Open Questions to fix it')
+    expect(message).toContain('delete custom_questions.json')
+  })
+
+  it('stringifies a non-Error rejection rather than producing "undefined"', () => {
+    expect(startErrorMessage('plain string rejection')).toContain('plain string rejection')
   })
 })
 

@@ -55,6 +55,12 @@ body {
   font-size: 14px;
 }
 
+/* startError is dismissible (the player can act on it); loadError is not — only this variant
+   gets the pointer affordance. */
+.load-error.dismissible {
+  cursor: pointer;
+}
+
 /* ---- shared controls ---- */
 
 .btn {

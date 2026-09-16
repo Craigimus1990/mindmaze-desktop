@@ -84,7 +84,11 @@ export const App = () => {
     (on: boolean): void => {
       setMusicEnabled(on)
       music.setEnabled(on)
-      void settingsStore.setMusicEnabled(on)
+      // Fire-and-forget: the toggle already took effect above (setMusicEnabled/music.setEnabled),
+      // so a failed write only means the preference won't stick for next launch — not worth
+      // surfacing or blocking the toggle on. Caught so a read-only profile doesn't produce an
+      // unhandled rejection.
+      void settingsStore.setMusicEnabled(on).catch(() => {})
       // A click landed to produce this, so the gesture requirement is already satisfied.
       if (on) music.start()
     },
@@ -105,6 +109,15 @@ export const App = () => {
     <div className="app" onPointerDown={onPointerDown}>
       {loadError !== null ? (
         <div className="load-error">{`Some artwork failed to load: ${loadError}`}</div>
+      ) : null}
+
+      {/* Same banner mechanism as loadError above — reused rather than inventing a second error
+          UI. Dismissible because, unlike a missing asset, the player can act on this (fix the
+          question in Questions, or delete custom_questions.json) and then wants it gone. */}
+      {game.startError !== null ? (
+        <div className="load-error dismissible" onClick={game.dismissStartError}>
+          {`${game.startError} (tap to dismiss)`}
+        </div>
       ) : null}
 
       {state.type === 'Menu' ? (
