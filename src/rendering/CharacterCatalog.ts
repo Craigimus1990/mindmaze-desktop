@@ -26,8 +26,9 @@ export class Character {
  *
  * Redwall-flavoured: heroic mice in chainmail, squirrel maids, otter cooks, a hare messenger from
  * the badger lord. All sprites are generated on a flat white background and cut out at generation
- * time — see docs/superpowers/specs/2026-08-04-room-characters-design.md for why white rather than
- * chroma green.
+ * time on a flat white background rather than chroma green (the sprites have fine translucent
+ * edges — whiskers, ear interiors — that green would fringe). That rationale lives in the Android
+ * repo's own design notes, which are not part of this port.
  *
  * Which character appears in which room is not decided here: it is authored per backdrop in
  * character_placements.json and resolved by PlacementMap.

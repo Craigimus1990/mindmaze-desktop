@@ -1,6 +1,6 @@
 # MindMaze Electron port — verification
 
-_2026-09-15. Branch `electron-port`, commit range `478535d..HEAD`._
+_2026-09-15._
 
 This records what was actually checked, how, and what was not. Claims here are things that were
 run and observed, not things inferred from the code.
@@ -110,9 +110,8 @@ selection is unseeded (matching Kotlin's bare `.random()`).
 - **Hand-resizing the window by dragging.** Sizes were set programmatically.
 - **A human playing a full maze by hand.** Full games were driven programmatically through the real
   engine and reducer; the UI was exercised by scripted clicks and keystrokes.
-- **The room/minimap renderers have no unit tests** — the plan defers this, matching the Android
-  project's own deferral of Compose UI tests. Their gate is the typecheck plus the visual checks
-  above.
+- **The room/minimap renderers have no unit tests**, matching the Android project's own deferral
+  of Compose UI tests. Their gate is the typecheck plus the visual checks above.
 - **Side-by-side pixel comparison against Android.** `mindmaze/samples/*.png` are placeholder-era
   renders at aspect 1.44–2.95, predating both the hand-drawn backdrops and the 1.25 `SPEC_ASPECT`,
   so they are not a valid baseline. Rendering was instead verified against the shipped drawables.

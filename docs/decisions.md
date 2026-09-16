@@ -1,36 +1,72 @@
-# Decisions made during the port
+# Design notes
 
-These are the judgement calls taken while porting, recorded so a future reader knows a choice was
-deliberate rather than accidental. They were made by the porting process, not by Max, and each
-notes what it costs if it turns out wrong.
+Choices in this codebase that look arbitrary but are not. Each records what would break if someone
+"simplified" it later. For what was tested and how the port differs from the Android build, see
+[verification.md](verification.md).
 
-The full working ledger (task briefs, review diffs, fix-round history) was scratch and is gone;
-git history and `docs/verification.md` are the durable record.
+## The 32-bit hash must use `Math.imul`
 
-1. `src/persistence/serialization.ts` is **created by Task 7**, which needs it for `GameStateSerialization.test.ts`. Task 13 **consumes** it and must not recreate it; T13's Files block is corrected to list it under Consumes rather than Create. Why: T7 is the task whose test requires the round-trip, and the spec names `GameStateSerializationTest` an engine-phase suite — deferring the helper to T13 would leave T7 unable to finish green, which is the plan's own completion criterion for the engine. Cost if wrong: near zero; if T13 finds the helper missing a field its stores need, it extends the file rather than creating it.
+`src/rendering/hash.ts` implements an integer avalanche that decides which character stands in a
+room and which treasure sprite it holds. The Kotlin original relies on `Int` arithmetic wrapping at
+32 bits; JavaScript numbers are 64-bit floats and do not wrap, and `>>` sign-extends where Kotlin's
+`ushr` does not.
 
-2. ports of this hash must use `Math.imul()` for both multiplies and `>>>` for the unsigned shifts; `Math.floorMod(a,n)` becomes `((a % n) + n) % n`. Applies to PlacementMap (T10), RoomTreasure (T12), and MenuBackdrop.indexFor (T14). Carry it in all three dispatches, and factor the shared hash into one helper (`src/rendering/hash.ts`) that T10 creates and T12 imports, so the arithmetic is written once and tested once. Why: preserves exact bucket assignment, so a room keeps its inhabitant and its treasure sprite across save/reload exactly as on Android. Cost if wrong: characters and treasure shuffle between rooms — cosmetic, but a silent divergence from Android that also fails the ported tests.
+Written with plain `*` and `>>`, the function still returns plausible numbers — it just returns
+*different* ones, silently reassigning characters and treasure to different rooms than the Android
+build shows. `Math.imul` and `>>>` reproduce Kotlin exactly; this was verified value-by-value
+against an independent implementation. `PlacementMap` and `RoomTreasure` both import from the one
+helper rather than each keeping a copy, because Kotlin kept two copies and they could drift.
 
-3. local GUI verification (T14 step 6, T15) uses `npx electron --no-sandbox` as a LAUNCHER flag only. The `sandbox: true` webPreference in main.ts stays untouched and must never be relaxed to work around this. Why: the flag is about this machine's file permissions, not the app's security posture, and the shipped builds are unaffected. Cost if wrong: none for end users; if a later task instead edits webPreferences, that is a real security regression and the review must catch it.
+## Room themes key on room id, never on door configuration
 
-4. dropping vite-plugin-electron-renderer is CORRECT under this architecture, not a regression. That plugin exists to let renderer code import Node built-ins; the spec (line 122) requires the opposite — "the renderer never imports fs or path", everything goes through the preload bridge. Verified no file under src/ imports node:/fs/path/os/crypto. So the plugin has nothing to do here and its removal is what unblocked CJS preload output. (It was subsequently removed from devDependencies in Task 16.) Cost if wrong: an unused dev dependency; zero runtime effect.
+`src/rendering/backdropName.ts`. A room's exit configuration changes as the player turns around —
+the same room reads as `room_with_left` from one side and `room_with_center_right` from the other.
+Picking a theme from the configuration therefore made a room change its decor *and its inhabitant*
+purely because the player backtracked. Keying on the persisted room id keeps both stable across a
+turn and across save/reload, without storing anything extra.
 
-5. tsconfig.node.json is inert — tsconfig.json's own include gained vite.config.ts and vitest.config.ts, and removing tsconfig.node.json leaves coverage at 2/2 (verified by moving the file aside and re-running tsc --listFiles). The Critical finding's substance — config files must be typechecked — is satisfied. It was kept at the time rather than spending a fix round on cosmetics, then deleted in Task 16 — a file that looks load-bearing and is not will mislead whoever reads it next. `tsconfig.json` carries a comment recording why there is no separate node config.
+## Hit-testing and drawing share one projection
 
-6. re-reviewer noted the port says "frustrating in play" where Kotlin said "frustrating in the car" — a trace of the app's Android Auto origin. Letting the reworded version stand: this is a desktop app and nobody plays it in a car. Cost if wrong: none, it is a comment.
+`src/rendering/RoomGeometry.ts` is the single source of truth for where doors are. Backdrops are
+centre-cropped ("cover") rather than stretched, which moves door positions relative to the pane, so
+`projectX`/`projectY` map authored source fractions onto screen fractions. Both the renderer and
+the click handler go through those functions.
 
-7. duplicate question ids are not rejected (re-reviewer raised it). Leaving as-is — Kotlin does not check either, the failure is graceful (a duplicate just occupies pool space and the used set skips it), and rejecting it would be a behaviour change beyond the port's scope. Cost if wrong: one question's worth of pool variety in a hand-authored bank.
+Door geometry was previously hardcoded in three places that drifted apart, leaving labels floating
+above and inboard of the doors they described — and, as the original comment puts it, "nothing
+failed a test because nothing tested it." Any code that computes a door position without this
+projection reintroduces that bug.
 
-8. the implementer's deviation (1) — collapsing performMove's pickup `when` to the Hint branch — is VERIFIED CORRECT, not a behaviour change. I read GameEngine.kt:318-360: the `if` guard already excludes None, Coin and Key before the `when` runs, and the Kotlin itself labels `Pickup.None -> state` as "// unreachable". Kotlin needed those branches only for exhaustiveness; TS narrows to Hint and rejects them. The TS carries the original reasoning verbatim (coins and keys are tapped, not auto-collected, so finding a key is something the player does) plus an in-place comment explaining the deviation. Cost if wrong: none — the branches were dead in both languages.
+## Three JSON sources, three deliberate failure policies
 
-9. downgrade claim B to Minor and defer; reject claim A. The check fails correctly in both cases, which is what it exists to do. character_placements.json is a build-time asset in our own repo, not user input, and a developer who corrupts it will be looking at the file anyway. Wrapping JSON.parse would be a small improvement, not a fix — roll it in if the file is touched again. Cost if wrong: a confusing stack trace for a developer who hand-edits an asset file.
+| Source | On malformed input | Why |
+|---|---|---|
+| `questions.json` | **throws** | A bad `correctIndex` means no answer is ever correct: every door stays shut and a child is told they are wrong when they are right. Fail loudly at load. |
+| `character_placements.json` | degrades to empty | Characters are decoration. A malformed file must not stop the game being playable. |
+| save files | degrade to `null` | Throwing would strand a player's game on launch. A legacy-format retry also reads saves written before `entryDirection` existed. |
 
-10. the naming logic goes to Task 12 as src/rendering/backdropName.ts with its own test file, including the four ported Kotlin cases. T11 keeps only loading/caching. Plan and spec both corrected, T12 brief regenerated. Why: without it every room would render a placeholder backdrop instead of one of the 11 themed ones, and the theme-stability bug the Kotlin comment records (a room changing decor AND inhabitant when the player merely turns around, because the theme was picked per door-config rather than per room id) would have been wide open to reintroduction. Cost if wrong: none — the logic has to live somewhere and T12 is the consumer.
+A bare `JSON.parse(x) as T` is an assertion, not a parse — TypeScript erases it and bad data flows
+on silently. Where the table says *throws*, the shape is validated and the error names the offending
+record and field.
 
-11. an EXPLICITLY empty topic set round-trips as all five in the port, where Kotlin's getStringSet would have returned it empty (its default applies only when the key is absent). I checked whether this state is reachable: MenuScreen.kt:79 guards every toggle with `if (next.isNotEmpty())`, so the UI never lets a player deselect their last topic. The divergence therefore exists only in a state the app cannot produce, and the port's behaviour (fall back to all topics) is the safer of the two — an empty pool would push TriviaRepository onto its whole-bank fallback. Not spending a fix round on unreachable code. CARRY TO TASK 14: MenuScreen must keep that `if (next.isNotEmpty())` guard when ported, or the divergence becomes reachable. Adding it to the T14 dispatch.
+## The renderer never touches the filesystem
 
-12. Max chose "fix it in the port only" — mindmaze/ stays read-only, and the divergence is documented so the same two-line change can be carried back to Android if he wants it.
+All file access goes through a preload bridge with a four-filename allowlist in the main process
+(`electron/main.ts`), with `contextIsolation`, `sandbox` on and `nodeIntegration` off. `vite-plugin-
+electron-renderer` is deliberately absent: it exists to let renderer code import Node built-ins,
+which is the opposite of what this architecture wants.
 
-13. controller finished the task rather than re-dispatching. Packaging is config work on context I already hold, and a fresh agent would re-derive the macOS constraint, the deferred-minor list and the build quirks from scratch. The review gate still runs. Built: dist scripts; the five deferred minors swept (removed the unused vite-plugin-electron-renderer, DELETED the inert tsconfig.node.json and recorded in tsconfig.json why there is none, dropped the dead break at UiStateReducer.ts:93, wired check-assets into CI, wrapped check-assets' JSON.parse so a malformed placements file names itself — verified both the good path and the broken path); .github/workflows/build.yml (test -> build matrix with fail-fast:false -> release on a tag); README; and a 512x512 app icon rendered from the FULL char_mouse_warrior sprite rather than upscaled from the 192px mipmap, so it matches the Android launcher (mindmaze commit 1d3258b). Controller verification: 314 tests, typecheck exit 0, check-assets OK. Workflow YAML parses; jobs test/build/release; matrix macos-latest + windows-latest; fail-fast false (a Windows failure must not cancel the macOS job, which cannot be rebuilt here). AppImage BUILDS (129MB) and LAUNCHES — wmctrl confirms a real window titled "MindMaze". Both earlier build warnings (default icon, missing desktopName) are now gone. One flake: a second launch crashed the GPU process (error_code=1002) and showed no window; --disable-gpu launches fine and the same build had launched fine before. Local graphics-stack flake on this machine, not an app defect. Noted rather than papered over. NOT verified and cannot be here: the macOS .dmg and Windows .exe. CI builds those.
+## Pickups are tapped, not collected automatically
 
-14. keep its .npmrc and its .gitignore dedupe; no rework. Concurrent duplication cost time but the overlap caught a real defect neither of us would have found alone.
+Coins, jewels and keys are drawn in the room and collected by clicking them. Hints still collect on
+entry, because they have no artwork of their own. The key especially is drawn where the eye goes,
+because it is the one pickup a player must not miss — finding it should be something the player
+does, not something that happens to them while walking past.
+
+## Local runs need `--no-sandbox`; the app's own sandbox stays on
+
+Electron's `chrome-sandbox` helper inside `node_modules` is not installed root-owned, which npm
+cannot fix, so a local launch may need `--no-sandbox` as a **launcher** flag. That is a file
+permission quirk of running from `node_modules`. It is not the `sandbox: true` webPreference in
+`electron/main.ts`, which must never be relaxed to work around it. Packaged builds ship a correctly
+permissioned helper and are unaffected.
