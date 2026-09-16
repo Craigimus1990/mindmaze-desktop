@@ -11,9 +11,17 @@ const drawables = new Set(
   ),
 )
 
-const placements = JSON.parse(
-  readFileSync(join(root, 'src/assets/data/character_placements.json'), 'utf-8'),
-)
+const placementsPath = join(root, 'src/assets/data/character_placements.json')
+let placements
+try {
+  placements = JSON.parse(readFileSync(placementsPath, 'utf-8'))
+} catch (e) {
+  // Name the file. A raw SyntaxError stack says nothing about which asset file is broken, and
+  // this one is hand-authored by tools/placement_editor.py, so a malformed write is realistic.
+  console.error(`ERROR: could not read ${placementsPath}`)
+  console.error(`  ${e.message}`)
+  process.exit(1)
+}
 
 // Validate structure: placements.placements must exist and be an object
 if (!placements.placements || typeof placements.placements !== 'object') {

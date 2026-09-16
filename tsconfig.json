@@ -1,3 +1,7 @@
+// No tsconfig.node.json: `include` below covers vite.config.ts and vitest.config.ts directly,
+// which is what actually typechecks them (verified — removing a separate node config left
+// coverage unchanged at 2/2). A referenced project would be the alternative; a file that is
+// present but inert is worse than neither, so there is deliberately none.
 {
   "compilerOptions": {
     "target": "ES2022",

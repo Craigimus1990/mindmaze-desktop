@@ -90,7 +90,6 @@ const apply = (
         case 'Open':
           return { type: 'InGame', game: newState }
       }
-      break
     }
 
     case 'WindlassChamberFound':
