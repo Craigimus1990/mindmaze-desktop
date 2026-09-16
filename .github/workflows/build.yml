@@ -27,8 +27,12 @@ jobs:
         include:
           - os: macos-latest
             script: dist:mac
+            artifact: mindmaze-macos
+            pattern: release/*.dmg
           - os: windows-latest
             script: dist:win
+            artifact: mindmaze-windows
+            pattern: release/*.exe
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -40,10 +44,12 @@ jobs:
       - run: npm run ${{ matrix.script }}
       - uses: actions/upload-artifact@v4
         with:
-          name: mindmaze-${{ matrix.os }}
-          path: |
-            release/*.dmg
-            release/*.exe
+          name: ${{ matrix.artifact }}
+          # One pattern per platform, not a shared list: macOS emits only .dmg and Windows only
+          # .exe, so a combined list would ask each leg to match a glob its own build never
+          # produces. Per-platform keeps `if-no-files-found: error` meaning "this build produced
+          # no installer" rather than depending on how the action treats a partially-matching list.
+          path: ${{ matrix.pattern }}
           # Fail loudly on an empty artifact. The default is `warn`, which would let a build that
           # produced no installer finish GREEN — and the release would then publish nothing for
           # that platform, with a passing tick suggesting it worked.
