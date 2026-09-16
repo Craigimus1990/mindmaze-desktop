@@ -350,7 +350,14 @@ image, and a failed load surfacing rather than hanging the start of a game.
 
 Not ported: Robolectric-dependent asset tests (`DrawableFiles`, `Png`, `ThemedAssetTest`,
 `UiAssetTest`, `MusicAssetTest`, `BackdropAssetTest`, `MenuBackdropTest`,
-`RoomAssetCalibrationTest`, `OverlayLabelTest`) and the two voice suites. The asset-existence
+`RoomAssetCalibrationTest`, `OverlayLabelTest`) and the two voice suites.
+
+**Correction made during implementation:** `ImageAssetManagerTest` was listed here as un-portable,
+on the assumption it was Robolectric-dependent. Only its bitmap-loading half is. Its four cases
+test `assetName`, which is pure logic deciding *which backdrop a room shows*, and they port
+directly — they moved to `tests/rendering/backdropName.test.ts` in Task 12, along with
+`assetName`/`themeFor`/`themedAssetName` themselves. Task 11's rewrite covers only the loading and
+caching that genuinely had to change for the web. The asset-existence
 checks are replaced by a single build-time script that verifies every name the catalogs
 reference resolves to a file in `src/assets/`.
 

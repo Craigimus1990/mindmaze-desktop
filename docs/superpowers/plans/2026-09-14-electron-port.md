@@ -14,6 +14,14 @@
 
 ## Global Constraints
 
+- **Running the app locally on this Linux box:** `npx electron` aborts with
+  `FATAL:setuid_sandbox_host.cc(163)` because `node_modules/electron/dist/chrome-sandbox` is not
+  `root:4755` and npm cannot make it so. Launch with `npx electron --no-sandbox` (or
+  `npm run dev -- --no-sandbox`) for local verification. This is a launcher flag about this
+  machine's file permissions — **never** relax the `sandbox: true` webPreference in
+  `electron/main.ts` to work around it. Packaged macOS and Windows builds ship a correctly
+  permissioned helper and are unaffected.
+
 - **Node:** 22.x. **TypeScript:** strict mode, `noUncheckedIndexedAccess` on.
 - **Grid:** `GRID_SIZE = 10`; room ids are `0..99`; direction offsets are NORTH `-10`, SOUTH `+10`, EAST `+1`, WEST `-1`.
 - **No behaviour changes.** Every rule, threshold, string, and quirk matches the Kotlin original. Where the original is odd, preserve the oddity and note it — do not fix it in passing.
@@ -139,7 +147,7 @@ const createWindow = () => {
     title: 'MindMaze',
     backgroundColor: '#1a1410',
     webPreferences: {
-      preload: path.join(__dirname, 'preload.mjs'),
+      preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
@@ -902,7 +910,7 @@ const bfsWithKeys = (maze: Maze): boolean => {
 Run: `npx vitest run tests/engine/MazeSolver.test.ts`
 Expected: PASS (6 tests).
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -1916,7 +1924,7 @@ const shuffleAnswers = (q: TriviaQuestion): TriviaQuestion => {
 Run: `npx vitest run tests/engine/ScoreCalculator.test.ts tests/engine/TriviaRepository.test.ts`
 Expected: PASS (7 + 9 = 16 tests).
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -2024,7 +2032,7 @@ Structural notes for the port:
 Run: `npx vitest run tests/engine/`
 Expected: PASS — every engine suite green. This is the completion criterion for the engine port.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -2283,19 +2291,22 @@ const placements = JSON.parse(
   readFileSync(join(root, 'src/assets/data/character_placements.json'), 'utf-8'),
 )
 
+// Placements reference a character by ID ("mouse_alchemist"); the drawable is that id with a
+// "char_" prefix ("char_mouse_alchemist.webp"), the mapping CharacterCatalog owns. Checking for
+// names that already start with "char_" would match nothing and pass vacuously.
 const missing = []
-const names = new Set()
-const walk = (node) => {
-  if (typeof node === 'string') { names.add(node); return }
-  if (Array.isArray(node)) { node.forEach(walk); return }
-  if (node && typeof node === 'object') {
-    for (const [k, v] of Object.entries(node)) { names.add(k); walk(v) }
+const ids = new Set()
+for (const entries of Object.values(placements.placements ?? {})) {
+  for (const entry of entries) {
+    if (entry && typeof entry.character === 'string') ids.add(entry.character)
   }
 }
-walk(placements)
-
-for (const name of names) {
-  if (name.startsWith('char_') && !drawables.has(name)) missing.push(name)
+if (ids.size === 0) {
+  console.error('No character ids found in character_placements.json — the check would pass vacuously.')
+  process.exit(1)
+}
+for (const id of ids) {
+  if (!drawables.has(`char_${id}`)) missing.push(`char_${id} (id "${id}")`)
 }
 
 if (missing.length > 0) {
@@ -2303,7 +2314,7 @@ if (missing.length > 0) {
   for (const m of missing) console.error(`  ${m}`)
   process.exit(1)
 }
-console.log(`OK: ${drawables.size} drawables, ${names.size} referenced names resolve.`)
+console.log(`OK: ${drawables.size} drawables; all ${ids.size} referenced character ids resolve.`)
 ```
 
 Add to `package.json` scripts: `"check-assets": "node scripts/check-assets.mjs"`.
@@ -2316,7 +2327,7 @@ Expected: `OK: 133 drawables, N referenced names resolve.` If names are missing,
 Run: `npx vitest run tests/rendering/assetManifest.test.ts`
 Expected: PASS (3 tests).
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -2328,8 +2339,8 @@ git commit -m "feat: copy assets and add the name-to-URL manifest"
 ### Task 10: RoomGeometry and PlacementMap
 
 **Files:**
-- Create: `src/rendering/RoomGeometry.ts`, `src/rendering/PlacementMap.ts`, `src/rendering/CharacterCatalog.ts`
-- Test: `tests/rendering/RoomGeometry.test.ts`, `tests/rendering/PlacementMap.test.ts`, `tests/rendering/CharacterCatalog.test.ts`
+- Create: `src/rendering/hash.ts`, `src/rendering/RoomGeometry.ts`, `src/rendering/PlacementMap.ts`, `src/rendering/CharacterCatalog.ts`
+- Test: `tests/rendering/hash.test.ts`, `tests/rendering/RoomGeometry.test.ts`, `tests/rendering/PlacementMap.test.ts`, `tests/rendering/CharacterCatalog.test.ts`
 
 **Interfaces:**
 - Consumes: `assetManifest` (Task 9), models (Task 2).
@@ -2369,8 +2380,11 @@ describe('RoomGeometry', () => {
   })
 
   it('a wider-than-pane asset is cropped horizontally, moving side doors outward', () => {
-    // A 0.16 door lands at 0.136 on a 1.667 asset — the case the doc comment cites.
-    expect(projectX(DOOR_LEFT_X, 1.667, 1.25)).toBeCloseTo(0.136, 2)
+    // A 0.16 door lands at 0.0466 on a 1.667 asset against the current 1.25 spec.
+    // NB the doc comment's "0.136" figure is historical: it was computed against the OLD
+    // SPEC_ASPECT of 1.556 (solving backwards, 0.136 needs a pane aspect of 1.557) and became
+    // stale when the spec moved to 1.25 for tablets. Assert the current value, not the comment's.
+    expect(projectX(DOOR_LEFT_X, 1.667, 1.25)).toBeCloseTo(0.0466, 3)
     expect(visibleHeightFraction(1.667, 1.25)).toBeCloseTo(1)
   })
 
@@ -2434,20 +2448,69 @@ export const tapBoundaries = (
 }
 ```
 
-- [ ] **Step 4: Port `PlacementMap.ts` and `CharacterCatalog.ts`**
+- [ ] **Step 4: Write `src/rendering/hash.ts` — the 32-bit avalanche**
+
+**Kotlin Int arithmetic does not survive a naive port.** `PlacementMap.hash` (and the identical
+copy in `RoomTreasure.kt`, ported in Task 12) relies on 32-bit signed wrapping multiplication and
+an unsigned shift:
+
+```kotlin
+var h = roomId * -0x61c88647 xor salt
+h = h xor (h ushr 15)
+h *= -0x7ee3623b
+h = h xor (h ushr 13)
+```
+
+JavaScript numbers are 64-bit floats: `*` does not wrap, so the product is simply a different
+number, and the bucket it lands in changes. That reassigns characters and treasure sprites to
+different rooms — a silent divergence from the Android build that also fails the ported tests.
+
+Use `Math.imul` (which IS 32-bit wrapping multiply) and `>>>`:
+
+```ts
+/**
+ * The 32-bit integer avalanche PlacementMap and RoomTreasure both key off.
+ *
+ * Math.imul, not `*`: Kotlin Int multiplication wraps at 32 bits and JavaScript's does not, so a
+ * plain `*` silently lands in a different bucket and moves a room's character or treasure. `>>>`
+ * matches Kotlin's `ushr`; `>>` would sign-extend and diverge on negative intermediates.
+ */
+export const avalanche = (roomId: number, salt: number): number => {
+  let h = (Math.imul(roomId, -0x61c88647) ^ salt) | 0
+  h = (h ^ (h >>> 15)) | 0
+  h = Math.imul(h, -0x7ee3623b)
+  return (h ^ (h >>> 13)) | 0
+}
+
+/** Kotlin's Math.floorMod — JS `%` keeps the sign of the dividend, which would throw off indexing. */
+export const floorMod = (a: number, n: number): number => ((a % n) + n) % n
+
+/** floorMod(avalanche(...), buckets), the form both call sites use. */
+export const bucket = (roomId: number, salt: number, buckets: number): number =>
+  floorMod(avalanche(roomId, salt), buckets)
+```
+
+Write `tests/rendering/hash.test.ts` asserting: `avalanche` returns a 32-bit integer for a range
+of room ids (`Number.isInteger` and within `-2**31 .. 2**31-1`), that it is stable for a given
+id, that adjacent ids land in different buckets (the avalanche's purpose), and that
+`floorMod(-7, 1024)` is `1017` rather than JS's `-7`.
+
+Task 12 imports `avalanche`/`bucket` from here rather than rewriting the arithmetic.
+
+- [ ] **Step 5: Port `PlacementMap.ts` and `CharacterCatalog.ts`**
 
 Read `../mindmaze/app/src/main/kotlin/com/mindmaze/app/rendering/PlacementMap.kt` (127 lines) and `CharacterCatalog.kt` (143 lines) and port them, reading `character_placements.json` through the asset manifest. Port their Kotlin tests alongside.
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [ ] **Step 6: Run tests to verify they pass**
 
 Run: `npx vitest run tests/rendering/`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
-git commit -m "feat: port RoomGeometry, PlacementMap, and CharacterCatalog"
+git commit -m "feat: port RoomGeometry, PlacementMap, CharacterCatalog, and the shared hash"
 ```
 
 ---
@@ -2630,7 +2693,8 @@ git commit -m "feat: add ImageAssetManager with async preloading"
 ### Task 12: Canvas renderers
 
 **Files:**
-- Create: `src/rendering/RoomRenderer.ts`, `src/rendering/MinimapRenderer.ts`, `src/rendering/RoomTreasure.ts`
+- Create: `src/rendering/backdropName.ts`, `src/rendering/RoomRenderer.ts`, `src/rendering/MinimapRenderer.ts`, `src/rendering/RoomTreasure.ts`
+- Test: `tests/rendering/backdropName.test.ts`, `tests/rendering/RoomTreasure.test.ts`
 
 **Interfaces:**
 - Consumes: `RoomGeometry`, `ImageAssetManager`, `PlacementMap`, `CharacterCatalog`, `ExitLayout`, models.
@@ -2655,33 +2719,85 @@ Keep the fraction constants exactly: `TREASURE_HEIGHT_FRACTION = 0.13`, `KEY_HEI
 
 Backdrops are drawn **center-cropped (cover), never stretched** — the doc comment explains that stretching squashed each asset by a different factor and distorted door shape. Compute the source rect with `RoomGeometry.visibleWidthFraction`/`visibleHeightFraction` so drawing and hit-testing share one projection.
 
-- [ ] **Step 1: Write `RoomTreasure.ts`**
+- [ ] **Step 1: Write `src/rendering/backdropName.ts` — which backdrop a room shows**
 
-Port `RoomTreasure.kt`, which decides which treasure sprite a room shows and what it is worth. Port `RoomTreasureTest.kt` with it.
+Two pure functions live on Kotlin's `ImageAssetManager` beside the bitmap loading that Task 11
+replaced. They are logic, not I/O, so they belong here rather than in the loader. Port them from
+`../mindmaze/app/src/main/kotlin/com/mindmaze/app/rendering/ImageAssetManager.kt` (lines ~56-125),
+carrying their doc comments.
 
-- [ ] **Step 2: Run the RoomTreasure test**
+`assetName(exits, layout)` maps which of the three on-screen slots have live exits to one of
+eight base names, using `ExitLayout` so it follows the player's facing:
+
+```ts
+export const assetName = (
+  exits: ReadonlyMap<Direction, ExitType>,
+  layout: ExitLayout = forEntry(null),
+): string => {
+  const live = (d: Direction) => { const e = exits.get(d); return e !== undefined && e.type !== 'Absent' }
+  const hasLeft = live(layout.left), hasCenter = live(layout.center), hasRight = live(layout.right)
+  if (hasLeft && hasCenter && hasRight) return 'room_with_left_center_right'
+  if (hasLeft && hasCenter) return 'room_with_left_center'
+  if (hasLeft && hasRight) return 'room_with_left_right'
+  if (hasCenter && hasRight) return 'room_with_center_right'
+  if (hasLeft) return 'room_with_left'
+  if (hasCenter) return 'room_with_center'
+  if (hasRight) return 'room_with_right'
+  return 'room_deadend'
+}
+```
+
+`themeFor(roomId)` and `themedAssetName(base, roomId)` pick the decor. **The theme is keyed on
+room id, never on the door configuration** — carry that comment, it records a real bug: the config
+changes as the player turns around (the same room reads as `room_with_left` from one side and
+`room_with_center_right` from the other), so selecting a theme per-config made a room change decor
+*and its inhabitant* purely because the player backtracked. Keying on the persisted room id keeps
+both stable across a turn and across save/reload without storing anything. `floorMod` because a
+negative id would otherwise throw. The 11 themes, in order: `stone_corridor`, `great_library`,
+`alchemy_study`, `map_room`, `armory`, `astronomer_tower`, `great_hall`, `cellar_vault`, `chapel`,
+`music_room`, `garden_courtyard`. `themedAssetName` returns `base` unchanged when no theme covers
+a configuration, keeping the eight placeholder drawables as a working fallback rather than showing
+a wall where a door is.
+
+Port `ImageAssetManagerTest.kt`'s four cases (`no exits maps to deadend`, `left exit only`,
+`center and right exits`, `all three exits`) into `tests/rendering/backdropName.test.ts`, and add
+coverage that `themedAssetName` is stable for a room id across different exit configurations —
+that is the property the bug above was about. Verify the composed names resolve via `hasAsset`.
+
+- [ ] **Step 2: Write `RoomTreasure.ts`**
+
+Port `RoomTreasure.kt`, which decides which treasure sprite a room shows and what it is worth.
+Port `RoomTreasureTest.kt` with it.
+
+**Do not reimplement its `hash`/`bucket`.** `RoomTreasure.kt` carries a byte-identical copy of the
+32-bit avalanche in `PlacementMap.kt`; Task 10 extracted it to `src/rendering/hash.ts`. Import
+`avalanche`, `bucket`, and `floorMod` from there. Writing it again in plain JS `*` arithmetic
+would not wrap at 32 bits and would hand back different buckets — moving treasure sprites between
+rooms and failing `RoomTreasureTest`.
+
+- [ ] **Step 3: Run the RoomTreasure test**
 
 Run: `npx vitest run tests/rendering/RoomTreasure.test.ts`
 Expected: PASS.
 
-- [ ] **Step 3: Write `MinimapRenderer.ts`**
+- [ ] **Step 4: Write `MinimapRenderer.ts`**
 
 Port `MinimapRenderer.kt`. It draws only visited rooms, hides cells outside the maze, and marks an uncollected key (commit `7813a7a`). No unit test — verified visually in Task 15.
 
-- [ ] **Step 4: Write `RoomRenderer.ts`**
+- [ ] **Step 5: Write `RoomRenderer.ts`**
 
 Port `RoomRenderer.kt`: backdrop (cover-scaled), character sprite, pickups, treasure, windlass, door overlays, HUD. Take `width`/`height` as explicit arguments, as the Kotlin version already does.
 
-- [ ] **Step 5: Typecheck**
+- [ ] **Step 6: Typecheck**
 
 Run: `npm run typecheck`
 Expected: exit 0.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
-git commit -m "feat: port the room and minimap renderers to canvas"
+git commit -m "feat: port the backdrop naming and the canvas renderers"
 ```
 
 ---
@@ -2689,10 +2805,11 @@ git commit -m "feat: port the room and minimap renderers to canvas"
 ### Task 13: Persistence
 
 **Files:**
-- Create: `src/persistence/serialization.ts`, `src/persistence/GameStateStore.ts`, `src/persistence/SettingsStore.ts`, `src/persistence/QuestionBank.ts`, `src/persistence/QuestionStore.ts`, `src/persistence/SavedGame.ts`
+- Create: `src/persistence/GameStateStore.ts`, `src/persistence/SettingsStore.ts`, `src/persistence/QuestionBank.ts`, `src/persistence/QuestionStore.ts`, `src/persistence/SavedGame.ts`, `src/types/window.d.ts`
 - Modify: `electron/main.ts`, `electron/preload.ts`
-- Create: `src/types/window.d.ts`
-- Test: `tests/persistence/serialization.test.ts`, `tests/persistence/SettingsStore.test.ts`, `tests/persistence/QuestionBank.test.ts`
+- **Carried forward from Task 7 — version vs corruption.** `deserializeGameState` throws `corrupt save: save format version N, expected M` for a version mismatch and `corrupt save: ...` for genuine corruption. Both are plain `Error`s, so a bare `catch` cannot tell them apart. The legacy-format retry below must branch on the version field (read it before decoding, or have the decoder throw a distinguishable error) rather than treating every throw as "try the legacy path". Getting this wrong means either a corrupt save is silently retried as legacy, or a legitimately old save is discarded.
+- **Already exists — do not recreate:** `src/persistence/serialization.ts` and `tests/persistence/serialization.test.ts` were created by Task 7, which needed the round-trip for its own suite. Extend the file if your stores need a field it does not yet carry; otherwise consume it as-is.
+- Test: `tests/persistence/SettingsStore.test.ts`, `tests/persistence/QuestionBank.test.ts`
 
 **Interfaces:**
 - Consumes: engine models, `GameState`.
@@ -2705,7 +2822,15 @@ git commit -m "feat: port the room and minimap renderers to canvas"
 
 **Serialization note:** `GameState` holds `Set` and `Map`, which `JSON.stringify` turns into `{}`. `serializeGameState` converts them to arrays and `deserializeGameState` restores them. This is why the serialisation test lives here.
 
-- [ ] **Step 1: Write the failing serialization test**
+- [ ] **Step 1: Confirm the Task 7 serialization round-trip still passes**
+
+`src/persistence/serialization.ts` and its test already exist (Task 7). Run them before building
+the stores on top, so a later failure is attributable to the stores rather than the serialiser:
+
+Run: `npx vitest run tests/persistence/serialization.test.ts`
+Expected: PASS. If it fails, stop and report — the engine phase is supposed to have left it green.
+
+For reference, the suite it must satisfy:
 
 ```ts
 // tests/persistence/serialization.test.ts
@@ -2769,22 +2894,13 @@ describe('GameState serialization', () => {
 })
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
-
-Run: `npx vitest run tests/persistence/serialization.test.ts`
-Expected: FAIL — module not found.
-
-- [ ] **Step 3: Write `serialization.ts`**
-
-Convert `Map`/`Set` to arrays on the way out and back on the way in. Every nested collection needs handling: `maze.rooms`, each `room.exits`, `maze.gatePairs`, `visitedRoomIds`, `windlassProgress`, `settings.topics`, and `treasureLock`'s two sets when `Barred`.
-
-- [ ] **Step 4: Write the stores**
+- [ ] **Step 2: Write the stores**
 
 `SettingsStore` keeps its Kotlin defaults exactly: `KINDERGARTEN`, `SIMPLE`, all topics, `musicEnabled = true`. Carry the doc comment explaining why `musicEnabled` is not in `GameSettings` — it is a UI preference and has no business in the engine's save format.
 
 `GameStateStore` keeps `saveActive`/`loadActive`/`clearActive`/`saveCrossSession`/`loadCrossSession`/`clearSaved`, and the legacy fallback: if a file does not parse as `SavedGame`, retry as a bare `GameState` and adopt it with `entryDirection: null`. Without it an upgrade throws on launch and strands the player's game.
 
-- [ ] **Step 5: Fill in `electron/preload.ts`**
+- [ ] **Step 3: Fill in `electron/preload.ts`**
 
 ```ts
 import { contextBridge, ipcRenderer } from 'electron'
@@ -2818,7 +2934,7 @@ const bridge: MindMazeBridge = {
 contextBridge.exposeInMainWorld('mindmaze', bridge)
 ```
 
-- [ ] **Step 6: Add the IPC handlers to `electron/main.ts`**
+- [ ] **Step 4: Add the IPC handlers to `electron/main.ts`**
 
 The filename allowlist matters: it is what stops a compromised renderer from using the bridge to read or write anywhere on disk.
 
@@ -2862,7 +2978,7 @@ ipcMain.handle('store:delete', async (_e, name: string) => {
 
 Add `src/types/window.d.ts` declaring `interface Window { mindmaze: MindMazeBridge }`.
 
-- [ ] **Step 7: Write and run the store tests**
+- [ ] **Step 5: Write and run the store tests**
 
 `SettingsStore` and `QuestionBank` tests inject a fake bridge (an in-memory `Map<string, string>`), so they need no Electron.
 
@@ -2892,22 +3008,97 @@ git commit -m "feat: add persistence over a sandboxed preload bridge"
 
 - [ ] **Step 1: Write `useGame.ts`**
 
+This is the port of `GameViewModel.kt` (378 lines, of which ~90 are voice handling that is out of
+scope). **Read that file in full before writing** — it holds several behaviours that are easy to
+lose and that nothing else will catch.
+
 It must:
 - hold `GameEngine` and `TriviaRepository` instances in a ref
 - expose `uiState` and `dispatch`
 - map each `PlayerAction` to the matching engine call, then `reduce(current, events, engine.getState(), action)`
-- record `entryDirection` as `opposite(movedDirection)` after each move, matching `GameViewModel`
-- autosave to `saveActive` after every state change
-- tick `elapsedMillis` on a 1-second interval while `InGame`
+- tick `elapsedMillis` on a 1-second interval while `InGame` or `Trivia`, recomputing it as
+  `now - sessionStart` rather than incrementing a counter, and persisting on every tick
+- on resume, set `sessionStart = now - state.elapsedMillis` so the clock continues rather than
+  restarting — a resumed game must not reset its time bonus
+
+**Five behaviours to preserve exactly, each with a comment in the Kotlin explaining it:**
+
+1. **`entryDirection` updates only on a *confirmed* move.** Compute the candidate direction from
+   the action (`Move`/`AttemptDoor` → its direction; `MoveBack` → the current `entryDirection`;
+   `SubmitAnswer` → the pending `Trivia.direction`), call the engine, and only then set
+   `entryDirection = opposite(candidate)` **if the returned events contain `Moved` or
+   `TreasureFound`**. The engine can reject a move outright or defer it behind a question, and in
+   both cases the player stays put — re-framing the room then would turn the view while the player
+   has not moved.
+
+2. **The windlass question chain.** Track a `windlassPending` flag. `TurnWindlass` sets it and
+   calls `engine.turnWindlass()`. A `SubmitAnswer` while it is set routes to
+   `engine.answerWindlass(correct)` — NOT `submitAnswer` — because a wrong door answer merely
+   keeps the door shut while a wrong windlass answer discards banked progress. If the result
+   contains `WindlassProgressed`, immediately ask the next question by appending
+   `engine.turnWindlass()` (filtering out `WindlassChamberFound`, which must only fire once) and
+   keep the flag set. The Kotlin comment records why: making the player re-tap the winch between
+   questions "read as one question and done", which is how a windlass got raised after a single
+   answer.
+
+3. **`UseKey` and `CollectPickup` are no-ops that report themselves.** They return
+   `InvalidAction("Keys are used automatically")` and `InvalidAction("Pickups are collected
+   automatically")` without touching the engine. Keys are consumed automatically at a locked door
+   and hints are collected on entry, so the old manual actions would otherwise silently do nothing.
+
+4. **Stamp `entryDirection` onto the reduced state.** `UiStateReducer` builds `InGame`/`Trivia`
+   with no knowledge of `entryDirection` (it is tracked in the hook, not in `GameState`), so after
+   reducing, copy the just-updated value onto those two variants. `GameScreen` is a pure function
+   of `UiState` and derives `forEntry(...)` from it.
+
+5. **A completed game clears both save files** rather than persisting a finished state — otherwise
+   the menu would offer to resume a game that is already won.
+
+Also port `returnToMenu` (which must recompute `hasSavedGame` from the stores) and the question
+editor actions `openQuestions`/`saveQuestion`/`deleteQuestion`. Note the delete path: deleting a
+custom entry saved under a bundled id was an override, so dropping it restores the bundled
+question rather than removing it.
 
 - [ ] **Step 2: Write `GameHost.tsx` (the canvas host)**
 
 - a `<canvas>` sized to a fixed internal resolution, scaled by CSS, multiplied by `devicePixelRatio`
 - on each `uiState` change, call `drawRoom` and `drawMinimap`
-- `onClick`: convert client coords to canvas fractions, then use `RoomGeometry.tapBoundaries` to decide which door was clicked — **the same projection used to draw**
+- `onClick`: port `GameScreen.kt`'s `handleTap` exactly. Read it first — its priority order is
+  deliberate and each step carries the reasoning:
+
+  1. **Windlass first**, if this is a `Barred` lock's windlass room. Hit-test a circle at
+     projected `(0.50, 0.70)` with radius `0.22`. The Kotlin comment explains why it may overlap
+     the centre door's region: a windlass chamber is a dead end with no centre door, so nothing is
+     stolen.
+  2. **Treasure next, and it wins.** `RoomTreasure.forRoom(room.id, room.pickup)`, hit-tested at
+     projected `(treasure.x, treasure.y)` within `RoomTreasure.HIT_RADIUS`. The room pane doubles
+     as the movement control, so a coin and a door can both claim one click; coins are kept clear
+     of every door centre by more than their own hit radius, so this cannot swallow a click meant
+     for a doorway.
+  3. **Doors last**, by x-fraction against `RoomGeometry.tapBoundaries(sourceAspect, paneAspect)`
+     — below the left edge → `layout.left`, below the right edge → `layout.center`, else
+     `layout.right`.
+
+  All hit-testing compares **in projected screen space**, through the same `projectX`/`projectY`
+  the renderer draws with. That shared projection is the invariant `RoomGeometry` exists to
+  protect — computing clicks any other way is how doors and their click regions drift apart.
+
+  Then map the exit to an action: `Absent` → ignore; `Door` OPEN → `Move`; `Door` CLOSED or
+  LOCKED → `AttemptDoor`; **`Gate` → `Move` regardless of whether it is open**. That last one
+  records a real bug — a closed gate used to return silently, which is why tapping the barred
+  treasure door did nothing at all: the engine never saw the click, so it never got to explain
+  what raises it. `Move` lets the engine answer with `TreasureBlocked`.
+
+  Layout: the room pane is `weight(0.7f)` of the width with the minimap taking the remainder.
 - `onKeyDown`: arrows/WASD → `Move`/`AttemptDoor`, `A`-`D` → `SubmitAnswer`, `Esc` → dismiss, `H` → `UseHint`, `K` → `UseKey`
 
 - [ ] **Step 3: Write the six screens**
+
+**`MenuScreen` — one guard you must carry.** Kotlin's topic chips wrap every toggle in
+`if (next.isNotEmpty())` (`MenuScreen.kt:79`), so a player can never deselect their last topic.
+Keep it. Without it a player can reach an empty topic set, which pushes `TriviaRepository` onto
+its whole-bank fallback and silently ignores their selection — and `SettingsStore` treats a stored
+empty set as "use all topics", so the setting would not even round-trip as chosen.
 
 Port each Compose screen to a React component, reusing the parchment styling assets (`ui_panel_tile`, `ui_answer_plate`, `ui_corner_flourish`). Keep every user-facing string identical.
 
@@ -2977,7 +3168,7 @@ Verify by hand:
 - keyboard alone can play a full turn
 - the window resizes without misaligning doors
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -3001,28 +3192,46 @@ Expected: every suite green. Record the count.
 Run: `npm run typecheck` and `npm run check-assets`
 Expected: both exit 0.
 
-- [ ] **Step 2: Play a full game at each complexity**
+- [ ] **Step 2: Launch the app the way a packaged build does**
+
+Not via `npm run dev`, and not by pointing Electron at `dist-electron/main.cjs` by hand — resolve
+`package.json`'s `"main"` field, exactly as Electron does when it starts a packaged app:
+
+```bash
+npm run build
+node -e "const p=require('./package.json'); console.log(p.main, require('fs').existsSync(p.main))"
+```
+Both must be `dist-electron/main.cjs true`. Then launch through that entry and confirm a window
+opens with the preload bridge present (`Object.keys(window.mindmaze).length === 10`).
+
+**Why this step exists:** `"main"` said `dist-electron/main.js` while the build emits `main.cjs`,
+so the packaged app could not launch at all. It survived twelve tasks because every check — the
+dev server, and every probe — loaded `main.cjs` by explicit path, which masked it completely. It
+would have surfaced in Task 16 as "the built app won't start", a long way from its cause. Any
+check that bypasses the real entry point can hide this whole class of defect.
+
+- [ ] **Step 3: Play a full game at each complexity**
 
 For SIMPLE, MEDIUM, and HARD: start a game, reach the treasure, confirm the results screen totals. On MEDIUM confirm the treasure door is locked and a key opens it; on HARD confirm two windlass chambers bar it and three correct answers raise each.
 
-- [ ] **Step 3: Compare rendering side by side**
+- [ ] **Step 4: Compare rendering side by side**
 
 Screenshot the same room type in both builds (the Android app can run in an emulator, or use `../mindmaze/samples/*.png`). Check door alignment, sprite scale, and HUD placement. Note any differences in `docs/verification.md`, with a judgement on whether each is cosmetic or a real drift.
 
-- [ ] **Step 4: Verify music**
+- [ ] **Step 5: Verify music**
 
 Confirm music starts on the first click rather than at load, loops, and stops when the setting
 is turned off. Confirm the setting survives a relaunch.
 
-- [ ] **Step 5: Verify persistence**
+- [ ] **Step 6: Verify persistence**
 
 Start a game, quit mid-maze, relaunch: the game resumes in the same room facing the same way. Change settings, relaunch: they persist. Confirm the files exist under `app.getPath('userData')`.
 
-- [ ] **Step 6: Write `docs/verification.md`**
+- [ ] **Step 7: Write `docs/verification.md`**
 
 Record test counts, what was played, screenshot comparisons, and every known difference from the Android build — including the preserved mid-trivia save quirk.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -3160,23 +3369,50 @@ jobs:
 
 `fail-fast: false` matters: a Windows failure should not cancel the macOS job, since macOS is the one that cannot be re-run locally.
 
-- [ ] **Step 4: Write the README**
+- [ ] **Step 4: Sweep the deferred minors**
+
+These accumulated across the port and were each judged not worth a fix round at the time. Do them
+now, while the build files are already open:
+
+- **Remove `vite-plugin-electron-renderer` from `devDependencies`** (Task 1). It was dropped from
+  `vite.config.ts` because it forced ESM onto the preload build; nothing imports it. Confirm
+  `npm run build` still emits `main.cjs` and `preload.cjs` afterwards.
+- **Wire `check-assets` into CI** (Task 9). The workflow's `test` job already runs it — confirm
+  that is so. It validates that every character id in `character_placements.json` resolves to a
+  drawable, and until it runs automatically it only catches a broken reference when someone
+  remembers to invoke it.
+- **Wrap `JSON.parse` in `scripts/check-assets.mjs`** (Task 9) so a malformed placements file
+  reports which file failed instead of dumping a raw Node stack trace. The exit code is already
+  correct; this is message quality only.
+- **Delete the dead `break` at `src/ui/UiStateReducer.ts:93`** (Task 8), left after an inner
+  switch whose every case returns.
+- **Decide `tsconfig.node.json`** (Task 1). It is currently inert — `tsconfig.json`'s own
+  `include` is what actually typechecks `vite.config.ts` and `vitest.config.ts` (verified: moving
+  the file aside leaves coverage at 2/2). Either wire it up via project references or delete it
+  and note that the flat `include` covers those files. Do not leave a file that looks load-bearing
+  and is not.
+
+Leave alone: the `defaultRng()` seed expression (Task 3 — correct, merely unidiomatic) and
+`buildRoomsWithFeatures`' trimmed comment (Task 5 — the trimmed sentence was redundant in the
+Kotlin too).
+
+- [ ] **Step 5: Write the README**
 
 Cover: what the app is, how to run it in development, how to run the tests, how to build each platform, where the macOS build comes from and why, and the unsigned first-launch steps for both platforms.
 
-- [ ] **Step 5: Verify the workflow is well-formed**
+- [ ] **Step 6: Verify the workflow is well-formed**
 
 Run: `npx --yes @action-validator/cli .github/workflows/build.yml` (or inspect by hand — it cannot be executed locally).
 Expected: no syntax errors.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
 git commit -m "chore: add packaging config and the CI build workflow"
 ```
 
-- [ ] **Step 7: Hand off to the user**
+- [ ] **Step 8: Hand off to the user**
 
 The repo is ready to push. Tell them:
 1. Create an empty GitHub repo (private is fine).
@@ -3189,6 +3425,20 @@ The repo is ready to push. Tell them:
 ## Notes for the executor
 
 **Read the Kotlin before porting each file.** The doc comments record bugs already fixed — the door-geometry drift, the maze-shattering generator, the 149-second windlass solve. Porting without reading them risks reintroducing exactly those bugs.
+
+**Carry the comments, not just the code.** Task 2 transcribed every type shape correctly and still lost `TreasureLock`'s rationale — including the note that reset-to-zero was a deliberate choice, the arithmetic behind it (75% answer rate → ~42% chance of three in a row → ~2.4 attempts per windlass), and the fact that flipping the flag is the tuning lever if play proves frustrating. Shapes are recoverable from the Kotlin; *reasoning* is not, and a constant with no comment reads as arbitrary to whoever touches it next. When a Kotlin declaration carries a comment explaining **why**, that comment is part of what you are porting — reviewers are expected to flag its absence.
+
+**JSON parsing policy is per-source, and the Kotlin is deliberate about it.** Three sources, three behaviours — match each, do not unify them:
+
+| Source | Kotlin behaviour | Why | Ported in |
+|---|---|---|---|
+| `questions.json` | `Topic.valueOf`/decoder **throws** on bad data | A bad `correctIndex` means no answer is ever right, every door stays shut, and a child is told they are wrong when they are right — a silent softlock. Fail loud at load. | Task 6 |
+| `character_placements.json` | `try/catch` → **empty map** | Characters are decoration; the game is entirely playable without them. A malformed map must not crash the game. | Task 10 |
+| save files | `try/catch` → **null**, with a legacy-format retry | Throwing on a bad save would strand the player's game on launch. The retry reads pre-envelope saves written before `entryDirection` existed. | Task 13 |
+
+A bare `JSON.parse(x) as T` is an unchecked assertion, not a parse: TypeScript erases it and bad data flows on silently. Where the table says *throws*, validate the shape and throw with a message naming the offending record and field.
+
+**A cast is not a parse.** `x as Topic` is erased at runtime and checks nothing; Kotlin's `Topic.valueOf()` throws. This bug class has now appeared twice — Task 6 (a missing `correctIndex` became `-1`, so no answer was ever correct and every door stayed shut) and Task 7 (a corrupt `DoorState` made a Door report itself as a gate). At every trust boundary where the Kotlin threw, validate against the exported member list (`TOPICS`, `DIFFICULTIES`, `COMPLEXITIES`, `DIRECTIONS`, `DOOR_STATES`) and fail with a message naming the field and its legal values. Reviewers should treat an unvalidated `as` on external data as a finding.
 
 **Never modify anything under `../mindmaze/`.** It is the reference, and it still has to build and run for Android.
 
