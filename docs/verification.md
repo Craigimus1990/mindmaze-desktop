@@ -7,7 +7,7 @@ run and observed, not things inferred from the code.
 
 ## Test suite
 
-`npm test` — **314 passing** across 28 files. `npm run typecheck` — exit 0. `npm run build` — exit 0.
+`npm test` — **316 passing** across 28 files. `npm run typecheck` — exit 0. `npm run build` — exit 0.
 
 All **10 Kotlin engine suites** are green in TypeScript:
 

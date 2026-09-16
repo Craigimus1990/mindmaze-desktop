@@ -27,10 +27,14 @@ npm run typecheck  # tsc --noEmit
 npm run check-assets  # verifies every character id in character_placements.json resolves to a drawable
 ```
 
-`npm test` runs 314 tests across the game engine, UI reducer, and rendering/persistence layers,
-ported from the Android app's Kotlin test suites. See `docs/verification.md` for what was checked
-beyond automated tests (solvability of generated mazes, full games played through the real
-engine at every difficulty tier, etc).
+`npm test` runs 316 tests across the game engine, UI reducer, and rendering/persistence layers,
+ported from the Android app's Kotlin test suites.
+
+- [`docs/verification.md`](docs/verification.md) — what was checked beyond the automated tests
+  (solvability of every generated maze, full games played at each difficulty), the three
+  deliberate differences from the Android build, and what was *not* verified.
+- [`docs/decisions.md`](docs/decisions.md) — choices in the code that look arbitrary but are not,
+  and what breaks if they are "simplified".
 
 ## Building
 
