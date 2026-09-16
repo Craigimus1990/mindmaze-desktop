@@ -44,6 +44,10 @@ jobs:
           path: |
             release/*.dmg
             release/*.exe
+          # Fail loudly on an empty artifact. The default is `warn`, which would let a build that
+          # produced no installer finish GREEN — and the release would then publish nothing for
+          # that platform, with a passing tick suggesting it worked.
+          if-no-files-found: error
 
   release:
     needs: build
